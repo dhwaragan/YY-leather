@@ -128,10 +128,10 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Admin emails list - exported so AdminPanel can use it
-const ADMIN_EMAILS = ["dhwaragandhwaragan9@gmail.com", "Yomeyom786@gmail.com", "stanislauscbe@gmail.com"];
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "").split(",").map((e: string) => e.trim()).filter(Boolean);
 
-export const isAdminEmail = (email: string): boolean => {
-  return ADMIN_EMAILS.some(adminEmail => adminEmail.toLowerCase() === email.toLowerCase());
+export const isAdminEmail = (email: string) => {
+  return ADMIN_EMAILS.some((adminEmail: string) => adminEmail.toLowerCase() === email.toLowerCase());
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({

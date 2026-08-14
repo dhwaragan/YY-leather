@@ -245,7 +245,7 @@ const AppCore: React.FC = () => {
   return (
     <div className="relative min-h-screen bg-neutral-50 flex flex-col justify-between">
       {/* Universal Sticky Navbar */}
-      <Navbar />
+      {currentPage !== "admin" && <Navbar />}
 
       {/* Screen Routing Switchboard */}
       <main className="flex-1">
@@ -750,16 +750,17 @@ const AppCore: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <Footer />
+      {currentPage !== "admin" && <Footer />}
 
       {/* Mobile Bottom Tab Navigation */}
-      <div id="persistent-bottom-nav" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200/85 shadow-lg px-4 py-2 flex justify-around items-center h-16 pointer-events-auto">
+      {currentPage !== "admin" && (
+        <div id="persistent-bottom-nav" className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-neutral-200/85 shadow-lg px-4 py-2 flex justify-around items-center h-16 pointer-events-auto">
         {[
           { id: "home", label: "Home", icon: Home },
           { id: "shop", label: "Browser", icon: Compass },
           { id: "sell", label: "WHY you choose us ?", icon: RefreshCw },
           { id: "cart", label: "Cart", icon: ShoppingBag, badge: cart.reduce((sum, item) => sum + item.quantity, 0) },
-          { id: "user-profile", label: "Profile", icon: User },
+          { id: "user-profile", label: "Profile", icon: User }
         ].map((tab) => {
           const IconComponent = tab.icon;
           let isActive = currentPage === tab.id;
@@ -777,7 +778,8 @@ const AppCore: React.FC = () => {
             </button>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

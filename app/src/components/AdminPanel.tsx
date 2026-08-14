@@ -111,7 +111,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         {value ? (
           <>
             <img src={value} alt="preview" className="w-full h-28 object-cover rounded-md" />
-            <div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-md">
+            <div className="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-black/60 backdrop-blur-sm text-white text-[9px] font-bold uppercase rounded z-10 pointer-events-none">
+              {value.includes('supabase.co') ? 'Direct' : 'URL'}
+            </div>
+            <div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center rounded-md z-20">
               <span className="text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Upload className="w-3.5 h-3.5" /> Change Image
               </span>
@@ -163,10 +166,7 @@ async function dbGet<T>(key: string): Promise<T[]> {
 }
 
 async function dbSet<T>(key: string, value: T[]): Promise<void> {
-  await supabase.from('yy_store_sync').upsert(
-    { key, value, updated_at: new Date().toISOString() },
-    { onConflict: 'key' }
-  );
+  console.warn("dbSet is deprecated. Using adminFetch to sync via server.");
 }
 
 export const AdminPanel: React.FC = () => {
@@ -341,6 +341,17 @@ export const AdminPanel: React.FC = () => {
     
     return fetch(finalUrl, { ...options, headers });
   }, [user, currentAdminPass]);
+
+  const syncToServer = async (key: string, value: any[]) => {
+    try {
+      await adminFetch(`/api/admin/store-sync/${key}`, {
+        method: 'POST',
+        body: JSON.stringify({ value })
+      });
+    } catch (e) {
+      console.error(`Failed to sync ${key} to server:`, e);
+    }
+  };
 
   const fetchSupabaseStatus = async () => {
     setIsSupabaseLoading(true);
@@ -687,13 +698,13 @@ export const AdminPanel: React.FC = () => {
         currentBlocks.push(newBlock);
       }
 
-      // Save directly to Supabase
-      const { error } = await supabase.from('yy_store_sync').upsert(
-        { key: 'content_blocks', value: currentBlocks, updated_at: new Date().toISOString() },
-        { onConflict: 'key' }
-      );
-      
-      if (!error) {
+      // Save via server backend instead of direct Supabase (Security Fix)
+      try {
+        await adminFetch('/api/admin/store-sync/content_blocks', {
+          method: 'POST',
+          body: JSON.stringify({ value: currentBlocks })
+        });
+        
         // Update local state
         setContentBlocks(currentBlocks);
         
@@ -714,7 +725,7 @@ export const AdminPanel: React.FC = () => {
         }
         
         setPassChangeFeedback('✅ Admin password changed successfully!');
-      } else {
+      } catch (error) {
         console.error('Failed to save password to database:', error);
         setPassChangeFeedback('⚠️ Password saved locally but failed to sync to database');
       }
@@ -762,18 +773,9 @@ export const AdminPanel: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({ value: currentBlocks })
       });
+      setFestivalFeedback('✅ Festival settings updated and synced successfully!');
     } catch (e) {
       console.warn('Failed to save content_blocks to local server API', e);
-    }
-
-    const { error } = await supabase.from('yy_store_sync').upsert(
-      { key: 'content_blocks', value: currentBlocks, updated_at: new Date().toISOString() },
-      { onConflict: 'key' }
-    );
-
-    if (!error) {
-      setFestivalFeedback('✅ Festival settings updated and synced successfully!');
-    } else {
       setFestivalFeedback('⚠️ Settings saved locally but cloud sync failed.');
     }
 
@@ -829,21 +831,12 @@ export const AdminPanel: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({ value: currentBlocks })
       });
-    } catch (localErr) {
-      console.warn('Failed to sync content_blocks to local server API:', localErr);
-    }
-
-    const { error } = await supabase.from('yy_store_sync').upsert(
-      { key: 'content_blocks', value: currentBlocks, updated_at: new Date().toISOString() },
-      { onConflict: 'key' }
-    );
-
-    if (!error) {
       setMaintFeedback(isMaintMode 
         ? "🔴 Website is currently under maintenance. Customers cannot access the storefront." 
         : "🟢 Website is online! Customers can access the storefront."
       );
-    } else {
+    } catch (localErr) {
+      console.warn('Failed to sync content_blocks to local server API:', localErr);
       setMaintFeedback("⚠️ Settings saved locally but cloud sync failed.");
     }
 
@@ -996,7 +989,7 @@ export const AdminPanel: React.FC = () => {
       const upperCat = newCatName.trim().toUpperCase();
       if (!allCategories.includes(upperCat)) {
         const updated = [...customCategories, upperCat];
-        await dbSet('custom_categories', updated);
+        await syncToServer('custom_categories', updated);
         setCustomCategories(updated);
         await refreshAllData();
       }
@@ -1006,7 +999,7 @@ export const AdminPanel: React.FC = () => {
 
   const handleDeleteCategory = async (cat: string) => {
     const updated = customCategories.filter(c => c !== cat);
-    await dbSet('custom_categories', updated);
+    await syncToServer('custom_categories', updated);
     setCustomCategories(updated);
     await refreshAllData();
   };
@@ -1015,12 +1008,12 @@ export const AdminPanel: React.FC = () => {
     if (!deleteConfirmId) return;
     if (deleteConfirmType === 'product') {
       const updated = products.filter(p => p.id !== deleteConfirmId);
-      await dbSet('products', updated);
+      await syncToServer('products', updated);
       await refreshAllData(true);
       setProducts(updated);
     } else if (deleteConfirmType === 'offer') {
       const updated = offers.filter(o => o.id !== deleteConfirmId);
-      await dbSet('offers', updated);
+      await syncToServer('offers', updated);
       await refreshAllData(true);
       setOffers(updated);
     } else if (deleteConfirmType === 'order') {
@@ -1225,7 +1218,7 @@ export const AdminPanel: React.FC = () => {
       is_active: true,
     };
     const updated = [...offers, newOffer];
-    await dbSet('offers', updated);
+    await syncToServer('offers', updated);
     await refreshAllData(true);
     setOffers(updated);
     setOTitle(''); setODesc(''); setOImg(''); setOUntil('');
@@ -1240,7 +1233,7 @@ export const AdminPanel: React.FC = () => {
       image_url: hsImg,
     };
     const updated = [...(heroSlides || []), newSlide];
-    await dbSet('hero_slides', updated);
+    await syncToServer('hero_slides', updated);
     await refreshAllData(true);
     setHeroSlides(updated);
     setHsImg('');
@@ -1248,7 +1241,7 @@ export const AdminPanel: React.FC = () => {
 
   const handleDeleteHeroSlide = async (id: string) => {
     const updated = heroSlides.filter(s => s.id !== id);
-    await dbSet('hero_slides', updated);
+    await syncToServer('hero_slides', updated);
     await refreshAllData(true);
     setHeroSlides(updated);
   };
@@ -1289,7 +1282,7 @@ export const AdminPanel: React.FC = () => {
       slides.splice(targetIndex, 0, removed);
 
       // Save to Supabase
-      await dbSet('hero_slides', slides);
+      await syncToServer('hero_slides', slides);
       await refreshAllData(true);
       
       // Update local state immediately

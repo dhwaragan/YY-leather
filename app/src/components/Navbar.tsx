@@ -151,24 +151,7 @@ export const Navbar: React.FC = () => {
             >
               <div className="px-4 pt-2 pb-6 space-y-2">
                 
-                {/* Mobile Quick Switch login references for grading */}
-                <div className="bg-neutral-50 p-2 rounded border border-neutral-200 mb-3">
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-neutral-400 mb-1 font-sans">Switch Testing Persona:</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => { handleQuickLogin('customer@example.com', false); setIsMobileMenuOpen(false); }}
-                      className="flex-1 bg-white border border-neutral-300 py-1 rounded text-xs font-semibold hover:bg-neutral-100"
-                    >
-                      Customer View
-                    </button>
-                    <button
-                      onClick={() => { handleQuickLogin('dhwaragandhwaragan9@gmail.com', true); setIsMobileMenuOpen(false); }}
-                      className="flex-1 bg-gold text-white py-1 rounded text-xs font-semibold hover:bg-gold-dark"
-                    >
-                      Admin Panel
-                    </button>
-                  </div>
-                </div>
+                {/* Quick Login removed for production security */}
 
                 {navLinks.map((link) => (
                   <button
@@ -372,7 +355,7 @@ export const Navbar: React.FC = () => {
                     className="w-full text-center px-4 py-3 bg-neutral-50 border border-neutral-300 focus:border-[#8B5A2B] focus:ring-1 focus:ring-[#8B5A2B] rounded-lg text-sm transition-all text-neutral-900 outline-none"
                     required
                   />
-                  <p className="text-[9px] text-neutral-400 mt-2">Authorized emails: dhwaragandhwaragan9@gmail.com, Yomeyom786@gmail.com, stanislauscbe@gmail.com</p>
+                  <p className="text-[9px] text-neutral-400 mt-2">Authorized admin emails are configured securely.</p>
                 </div>
                 <div>
                   <input

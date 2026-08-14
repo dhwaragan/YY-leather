@@ -41,11 +41,13 @@ function getAi(): GoogleGenAI {
 }
 
 // Initialize Supabase Client - uses environment variables from .env file
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://joutnmqckfwtfwicfqrm.supabase.co";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvdXRubXFja2Z3dGZ3aWNmcXJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NTk5NDEsImV4cCI6MjEwMTQzNTk0MX0._cscygUUrJdwnfDhJm5IXGK5fo6X7ig6SaR2rDYcb8o";
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://xslhdwoiqbpnzzhjxzod.supabase.co";
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MDQ2OTAsImV4cCI6MjEwMjI4MDY5MH0.3y36PEio0C_kNuU5i2_PklPq8fgSJPCX1ebDkql7rT0";
 console.log('[Supabase] Connecting to:', SUPABASE_URL);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Use Service Key if available to bypass RLS, otherwise fallback to Anon Key
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY || SUPABASE_ANON_KEY);
 
 
 
@@ -122,7 +124,7 @@ app.use((req, res, next) => {
 });
 
 // Admin emails list
-const ADMIN_EMAILS = ["dhwaragandhwaragan9@gmail.com", "Yomeyom786@gmail.com", "stanislauscbe@gmail.com"];
+const ADMIN_EMAILS = (process.env.VITE_ADMIN_EMAILS || "").split(",").map(e => e.trim()).filter(Boolean);
 
 // Helper to get current admin password (env var first - ZERO Supabase egress for auth)
 const getAdminPassword = async () => {
@@ -889,9 +891,8 @@ async function pullFromSupabase() {
         return true;
       }
     } else {
-      console.log("[Supabase Sync] Supabase table is empty. Pre-seeding Supabase with local data...");
-      // Seed minimal public data — NOT orders/preorders (those would be empty on first deploy anyway)
-      const keysToSync: Array<keyof Database> = ['products', 'offers', 'content_blocks'];
+      console.log("[Supabase Sync] Supabase table is empty. Pre-seeding Supabase with ALL local data...");
+      const keysToSync: Array<keyof Database> = ['products', 'offers', 'content_blocks', 'orders', 'preorders', 'profiles', 'custom_categories', 'hero_slides'];
       for (const key of keysToSync) {
         await syncToSupabase(key, db[key]);
       }

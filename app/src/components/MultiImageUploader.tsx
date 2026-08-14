@@ -69,7 +69,10 @@ export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
         {value.map((url, i) => (
            <div key={i} className="relative w-24 h-24 border rounded overflow-hidden shadow-sm group">
              <img src={url} alt="upload preview" className="w-full h-full object-cover" />
-             <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 bg-white/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+             <div className="absolute top-1 left-1 px-1 py-0.5 bg-black/60 text-white text-[9px] rounded font-bold uppercase tracking-wider backdrop-blur-sm pointer-events-none z-10">
+               {url.includes('supabase.co') ? 'Direct' : 'URL'}
+             </div>
+             <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 bg-white/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
                 <X className="w-3 h-3 text-red-500" />
              </button>
            </div>
