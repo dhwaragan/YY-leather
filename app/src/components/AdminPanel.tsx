@@ -192,7 +192,8 @@ export const AdminPanel: React.FC = () => {
     customCategories: contextCustomCategories,
     isMaintenanceMode: globalIsMaintenanceMode,
     maintenanceTitle: globalMaintenanceTitle,
-    maintenanceMessage: globalMaintenanceMessage
+    maintenanceMessage: globalMaintenanceMessage,
+    navigateTo
   } = useApp();
 
   const [enteredEmail, setEnteredEmail] = useState('');
@@ -1600,7 +1601,7 @@ export const AdminPanel: React.FC = () => {
                 </div>
               </div>
               <div className="wb-right">
-                <button className="wb-btn" onClick={() => window.open('/', '_blank')}>
+                <button className="wb-btn" onClick={() => navigateTo('home')}>
                   🛍️ Live Shop
                 </button>
                 <button className="wb-btn" onClick={async () => { 
