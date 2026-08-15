@@ -1221,8 +1221,23 @@ app.post('/api/orders', async (req, res) => {
     student_discount_requested, student_discount_details,
     birthday_benefit_requested, birthday_benefit_details,
     buyback_requested, buyback_details,
-    applied_offer
+    applied_offer,
+    is_admin_free_order, admin_password
   } = req.body;
+  
+  if (is_admin_free_order) {
+    const adminEmailsStr = process.env.VITE_ADMIN_EMAILS || 'dhwaraganwebsite@gmail.com,yomeyom786@gmail.com';
+    const allowedEmails = adminEmailsStr.split(',').map(e => e.trim().toLowerCase());
+    
+    if (!allowedEmails.includes(customer_email?.toLowerCase())) {
+      return res.status(403).json({ success: false, message: 'Only admins can place free orders' });
+    }
+    
+    const correctPassword = process.env.VITE_ADMIN_PASSWORD || 'YYLeathers@SecureAdmin2026!';
+    if (admin_password !== correctPassword) {
+      return res.status(401).json({ success: false, message: 'Invalid Admin Password' });
+    }
+  }
   
   const newOrder = {
     id: `YY-ORD-${Math.floor(10000 + Math.random() * 90000)}`,
@@ -1231,13 +1246,13 @@ app.post('/api/orders', async (req, res) => {
     customer_email,
     phone: phone || '',
     items,
-    total,
+    total: is_admin_free_order ? 0 : total,
     status: "Ordered",
     address,
-    razorpay_order_id: razorpay_order_id || `order_rp_${Date.now()}`,
-    razorpay_payment_id: razorpay_payment_id || `pay_rp_${Date.now()}`,
+    razorpay_order_id: is_admin_free_order ? 'admin_free_order' : (razorpay_order_id || `order_rp_${Date.now()}`),
+    razorpay_payment_id: is_admin_free_order ? 'admin_free_order' : (razorpay_payment_id || `pay_rp_${Date.now()}`),
     delivery_region: delivery_region || 'TN',
-    delivery_charge: delivery_charge || 0,
+    delivery_charge: is_admin_free_order ? 0 : (delivery_charge || 0),
     estimated_weight_kg: estimated_weight_kg || 1,
     student_discount_requested: student_discount_requested || false,
     student_discount_details: student_discount_details || null,

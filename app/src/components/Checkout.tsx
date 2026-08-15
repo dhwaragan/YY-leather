@@ -258,6 +258,10 @@ export const Checkout: React.FC = () => {
     }
   };
 
+  // ----- ADMIN FREE ORDER STATE -----
+  const [isAdminFreeOrder, setIsAdminFreeOrder] = useState(false);
+  const [adminPassword, setAdminPassword] = useState('');
+
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setCheckoutError(null);
@@ -323,9 +327,47 @@ export const Checkout: React.FC = () => {
           status: 'Pending'
         } : undefined,
         applied_offer: appliedOffer,
+        is_admin_free_order: isAdminFreeOrder,
+        admin_password: adminPassword,
       };
 
       setOrderBody(body);
+
+      // ----- ADMIN FREE ORDER BYPASS -----
+      if (isAdminFreeOrder) {
+        if (!adminPassword.trim()) {
+          setCheckoutError('Admin password is required for free orders.');
+          setIsAssemblingGateway(false);
+          return;
+        }
+
+        const saveOrderResponse = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...body,
+            delivery_state: selectedState,
+            status: 'Ordered',
+            phone: body.phone || phoneNumber,
+          }),
+        });
+
+        const saveOrderData = await saveOrderResponse.json();
+        
+        if (!saveOrderResponse.ok) {
+          throw new Error(saveOrderData.message || 'Failed to place admin free order.');
+        }
+
+        await decrementStock(cart);
+        refreshAllData(true);
+        
+        setOrderId('admin_free_order');
+        setOrderSuccess(true);
+        clearCart();
+        setTimeout(() => navigateTo('user-profile'), 2000);
+        return;
+      }
+      // -----------------------------------
 
       const orderResponse = await fetch('/api/razorpay/create-order', {
         method: 'POST',
@@ -615,6 +657,30 @@ export const Checkout: React.FC = () => {
                     {razorpayKeyId ? <span className="block mt-1 text-[10px] text-green-700">Razorpay is configured for payments.</span> : <span className="block mt-1 text-[10px] text-amber-700">Razorpay key is not configured yet.</span>}
                   </div>
                 </div>
+                
+                {user?.email === 'dhwaragandhwaragan9@gmail.com' && (
+                  <div className="bg-red-50 border border-red-200 p-4 rounded-lg mt-4 space-y-3">
+                    <label className="flex items-center gap-2 cursor-pointer font-bold text-red-900 text-xs">
+                      <input 
+                        type="checkbox" 
+                        checked={isAdminFreeOrder}
+                        onChange={(e) => setIsAdminFreeOrder(e.target.checked)}
+                        className="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                      />
+                      Bypass Payment (Admin Free Order)
+                    </label>
+                    {isAdminFreeOrder && (
+                      <input 
+                        type="password" 
+                        value={adminPassword}
+                        onChange={(e) => setAdminPassword(e.target.value)}
+                        placeholder="Enter Admin Password"
+                        className="w-full p-2 border border-red-200 rounded text-xs focus:outline-none focus:border-red-400"
+                        required={isAdminFreeOrder}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
 
               {isPaymentReady && razorpayOrderId ? (
@@ -625,7 +691,7 @@ export const Checkout: React.FC = () => {
                 <div className="bg-neutral-50 px-6 py-4 border-t border-neutral-100 flex items-center justify-between">
                   <span className="text-[10px] text-neutral-450 font-sans tracking-wide">※ High-Arch premium welt adjustments included on dispatch.</span>
                   <button type="submit" disabled={isAssemblingGateway || requiresManualQuote} className="bg-leather hover:bg-gold text-white font-sans text-xs uppercase tracking-widest font-bold py-3.5 px-6 rounded-md shadow-md transition-all duration-350 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
-                    {isAssemblingGateway ? (<><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Launching Gateway...</>) : (`PAY WITH RAZORPAY (₹${orderTotal.toLocaleString('en-IN')})`)}
+                    {isAssemblingGateway ? (<><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Processing...</>) : (isAdminFreeOrder ? 'PLACE FREE ADMIN ORDER' : `PAY WITH RAZORPAY (₹${orderTotal.toLocaleString('en-IN')})`)}
                   </button>
                 </div>
               )}
