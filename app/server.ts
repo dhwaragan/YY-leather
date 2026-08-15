@@ -904,7 +904,7 @@ async function pullFromSupabase() {
   return false;
 }
 
-function saveDatabase(newDb: Database, changedKey?: string) {
+async function saveDatabase(newDb: Database, changedKey?: string) {
   try {
     db = newDb;
     
@@ -918,11 +918,12 @@ function saveDatabase(newDb: Database, changedKey?: string) {
     const keysToSync: Array<keyof Database> = changedKey 
       ? [changedKey as keyof Database]
       : ['profiles', 'products', 'orders', 'preorders', 'offers', 'content_blocks'];
-    for (const key of keysToSync) {
+      
+    await Promise.all(keysToSync.map(key => 
       syncToSupabase(String(key), db[key]).catch(err => {
         console.error(`[Supabase Sync] Failed to sync '${key}':`, err);
-      });
-    }
+      })
+    ));
   } catch (error) {
     console.error("Failed to save database", error);
   }
@@ -1211,7 +1212,7 @@ app.get('/api/orders/user/:userId', async (req, res) => {
   res.json(userOrders);
 });
 
-app.post('/api/orders', (req, res) => {
+app.post('/api/orders', async (req, res) => {
   // Allow public to create orders (customers)
   const { 
     user_id, items, total, address, phone, customer_name, customer_email, 
@@ -1249,7 +1250,7 @@ app.post('/api/orders', (req, res) => {
   };
   
   db.orders.unshift(newOrder);
-  saveDatabase(db, 'orders');
+  await saveDatabase(db, 'orders');
   res.json({ success: true, order: newOrder });
 });
 
@@ -1266,7 +1267,7 @@ app.put('/api/orders/:id', authenticateAdmin, async (req, res) => {
   if (index !== -1) {
     // Merge all fields from the request body (status, buyback_details, total, etc.)
     db.orders[index] = { ...db.orders[index], ...req.body };
-    saveDatabase(db, 'orders');
+    await saveDatabase(db, 'orders');
     return res.json({ success: true, order: db.orders[index] });
   }
   res.status(404).json({ success: false, message: "Order records not found." });
@@ -1283,7 +1284,7 @@ app.delete('/api/orders/:id', authenticateAdmin, async (req, res) => {
   const index = db.orders.findIndex(o => o.id === id);
   if (index !== -1) {
     db.orders.splice(index, 1);
-    saveDatabase(db, 'orders');
+    await saveDatabase(db, 'orders');
     return res.json({ success: true, message: "Order deleted successfully" });
   }
   res.status(404).json({ success: false, message: "Order not found" });

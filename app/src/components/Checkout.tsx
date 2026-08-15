@@ -295,7 +295,7 @@ export const Checkout: React.FC = () => {
       const body = {
         address,
         phone: phoneNumber,
-        email: user.email,
+        customer_email: user.email,
         customer_name: editableName || user.name, // Use editable name if changed
         user_id: user.id,
         items: cart,
