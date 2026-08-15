@@ -2,9 +2,10 @@
 const { createClient } = require('@supabase/supabase-js');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://xslhdwoiqbpnzzhjxzod.supabase.co";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MDQ2OTAsImV4cCI6MjEwMjI4MDY5MH0.3y36PEio0C_kNuU5i2_PklPq8fgSJPCX1ebDkql7rT0";
+// Use the service role key to bypass RLS policies
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NjcwNDY5MCwiZXhwIjoyMTAyMjgwNjkwfQ.wym9k3nBqRQXjyXDaHO9L83u8f7w3djaNI8SBLYzN38";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 exports.handler = async (event) => {
   const headers = {
@@ -40,6 +41,22 @@ exports.handler = async (event) => {
     // POST - Create new order
     if (event.httpMethod === 'POST') {
       const body = JSON.parse(event.body);
+      
+      // Admin free order verification
+      if (body.is_admin_free_order) {
+        const adminEmailsStr = process.env.VITE_ADMIN_EMAILS || 'dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,dhwaraganwebsite@gmail.com';
+        const allowedEmails = adminEmailsStr.split(',').map(e => e.trim().toLowerCase());
+        
+        if (!body.customer_email || !allowedEmails.includes(body.customer_email.toLowerCase())) {
+          return { statusCode: 403, headers, body: JSON.stringify({ success: false, message: 'Only admins can place free orders' }) };
+        }
+        
+        const correctPassword = process.env.VITE_ADMIN_PASSWORD || 'YYLeathers@SecureAdmin2026!';
+        if (body.admin_password !== correctPassword) {
+          return { statusCode: 401, headers, body: JSON.stringify({ success: false, message: 'Invalid Admin Password' }) };
+        }
+      }
+
       const {
         user_id, items, total, address, phone, customer_name, customer_email,
         razorpay_order_id, razorpay_payment_id,
