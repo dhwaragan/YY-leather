@@ -11,7 +11,7 @@
   VITE_RAZORPAY_KEY_ID = "rzp_live_TFnYWaFof1ynO6"
   RAZORPAY_KEY_SECRET = "P2ba701WLFrmPQM4XA1pk1q6"
   VITE_ADMIN_PASSWORD = "YYLeathers@SecureAdmin2026!"
-  VITE_ADMIN_EMAILS = "dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,stanislauscbe@gmail.com"
+  VITE_ADMIN_EMAILS = "dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,dhwaraganwebsite@gmail.com"
 
 [functions]
   node_bundler = "esbuild"
