@@ -1,8 +1,8 @@
 // Preorders Netlify Function - Reads/Writes directly to Supabase for persistence
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://joutnmqckfwtfwicfqrm.supabase.co";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvdXRubXFja2Z3dGZ3aWNmcXJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NTk5NDEsImV4cCI6MjEwMTQzNTk0MX0._cscygUUrJdwnfDhJm5IXGK5fo6X7ig6SaR2rDYcb8o";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://xslhdwoiqbpnzzhjxzod.supabase.co";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MDQ2OTAsImV4cCI6MjEwMjI4MDY5MH0.3y36PEio0C_kNuU5i2_PklPq8fgSJPCX1ebDkql7rT0";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
