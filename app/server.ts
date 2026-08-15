@@ -1264,6 +1264,17 @@ app.post('/api/orders', async (req, res) => {
     created_at: new Date().toISOString()
   };
   
+  if (IS_SERVERLESS) {
+    try {
+      const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
+      if (data?.value && Array.isArray(data.value)) {
+        db.orders = data.value;
+      }
+    } catch (e) {
+      console.error('Failed to pull orders before POST:', e);
+    }
+  }
+  
   db.orders.unshift(newOrder);
   await saveDatabase(db, 'orders');
   res.json({ success: true, order: newOrder });
