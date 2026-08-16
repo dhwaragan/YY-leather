@@ -229,18 +229,54 @@ export const Checkout: React.FC = () => {
   const taxAmount = Math.round(taxableAmount * 0.05);
   const orderTotal = Math.max(0, taxableAmount + processingFee + deliveryCharge + taxAmount);
 
-  const readFileAsDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(new Error('Unable to read the selected image.'));
-    reader.readAsDataURL(file);
-  });
+  const compressImage = (file: File, maxWidth = 600, maxHeight = 600, quality = 0.6): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(e.target?.result as string);
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressed);
+        };
+        img.onerror = () => reject(new Error('Failed to load image for compression.'));
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error('Failed to read file.'));
+      reader.readAsDataURL(file);
+    });
+  };
 
   const handleBirthdayPhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await compressImage(file);
       setBirthdayGovIdPhotoUrl(dataUrl);
     } catch {
       alert('Could not read the selected ID image. Please try another file.');
@@ -251,7 +287,7 @@ export const Checkout: React.FC = () => {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await compressImage(file);
       setStudentIdPhotoUrl(dataUrl);
     } catch {
       alert('Could not read the selected ID image. Please try another file.');
