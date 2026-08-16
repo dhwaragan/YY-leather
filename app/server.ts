@@ -172,7 +172,7 @@ const getAdminPassword = async () => {
   }
   
   // Absolute fallback
-  return "chennaileather2026";
+  return "YYLeathers@SecureAdmin2026!";
 };
 
 // Admin Authentication Middleware
@@ -250,7 +250,7 @@ const authenticateAdmin = async (req: any, res: any, next: any) => {
   
   // STEP 5: Absolute hardcoded fallback — the initial default password ALWAYS works
   // Allow default if cache is empty (no custom password set) or cache itself is the default
-  const HARDCODED_DEFAULT = "chennaileather2026";
+  const HARDCODED_DEFAULT = "YYLeathers@SecureAdmin2026!";
   if (normalizedPassword === HARDCODED_DEFAULT) {
     const customPasswordSet = cachedAdminPassword && cachedAdminPassword !== HARDCODED_DEFAULT;
     if (!customPasswordSet) {
@@ -960,7 +960,7 @@ function initializePasswordCache() {
   }
   
   // Final fallback to default
-  cachedAdminPassword = "chennaileather2026";
+  cachedAdminPassword = "YYLeathers@SecureAdmin2026!";
   console.log('[Auth] Initialized password cache with default password');
 }
 
@@ -1052,7 +1052,7 @@ app.post('/api/auth/verify-password', async (req, res) => {
   }
   
   // STEP 5: Absolute hardcoded fallback — default password always works if no custom password set
-  const HARDCODED_DEFAULT = "chennaileather2026";
+  const HARDCODED_DEFAULT = "YYLeathers@SecureAdmin2026!";
   if (normalizedPassword === HARDCODED_DEFAULT) {
     const customPasswordSet = cachedAdminPassword && cachedAdminPassword !== HARDCODED_DEFAULT;
     if (!customPasswordSet) {
