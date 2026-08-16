@@ -124,7 +124,7 @@ app.use((req, res, next) => {
 });
 
 // Admin emails list
-const ADMIN_EMAILS = (process.env.VITE_ADMIN_EMAILS || "").split(",").map(e => e.trim()).filter(Boolean);
+const ADMIN_EMAILS = (process.env.VITE_ADMIN_EMAILS || "dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,stanislauscbe@gmail.com,dhwaraganwebsite@gmail.com").split(",").map(e => e.trim()).filter(Boolean);
 
 // Helper to get current admin password (env var first - ZERO Supabase egress for auth)
 const getAdminPassword = async () => {
