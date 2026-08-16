@@ -1903,22 +1903,25 @@ export const AdminPanel: React.FC = () => {
                               </div>
                             )}
 
-                            {(ord as any).student_discount_requested && (ord as any).student_discount_details && (
-                              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded text-xs space-y-2">
-                                <p className="font-bold text-blue-700 uppercase tracking-wider text-[10px]">🎓 STUDENT DISCOUNT REQUEST</p>
-                                {(ord as any).student_discount_details.id_photo_url ? (
-                                  <img
-                                    src={(ord as any).student_discount_details.id_photo_url}
-                                    alt="Student ID proof"
-                                    className="mt-1 h-32 w-full object-cover rounded border border-blue-200"
-                                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block'; }}
-                                  />
-                                ) : null}
-                                <p className="text-neutral-400 text-[10px]" style={{display: (ord as any).student_discount_details.id_photo_url ? 'none' : 'block'}}>
-                                  No photo uploaded
-                                </p>
-                              </div>
-                            )}
+                            {(ord as any).student_discount_requested && (ord as any).student_discount_details && (() => {
+                              const photoUrl = (ord as any).student_discount_details.id_photo_url || (ord as any).student_discount_details.student_id_photo_url;
+                              return (
+                                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded text-xs space-y-2">
+                                  <p className="font-bold text-blue-700 uppercase tracking-wider text-[10px]">🎓 STUDENT DISCOUNT REQUEST</p>
+                                  {photoUrl ? (
+                                    <img
+                                      src={photoUrl}
+                                      alt="Student ID proof"
+                                      className="mt-1 h-32 w-full object-cover rounded border border-blue-200"
+                                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block'; }}
+                                    />
+                                  ) : null}
+                                  <p className="text-neutral-400 text-[10px]" style={{display: photoUrl ? 'none' : 'block'}}>
+                                    No photo uploaded
+                                  </p>
+                                </div>
+                              );
+                            })()}
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {(['Pending', 'Confirmed', 'Dispatched', 'Delivered'] as const).map((step) => (
@@ -2044,21 +2047,24 @@ export const AdminPanel: React.FC = () => {
                           </div>
                         )}
 
-                        {(ord as any).student_discount_requested && (ord as any).student_discount_details && (
-                          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded text-xs space-y-2">
-                            <p className="font-bold text-blue-700 uppercase tracking-wider text-[10px]">🎓 STUDENT DISCOUNT REQUEST</p>
-                            {(ord as any).student_discount_details.id_photo_url ? (
-                              <img
-                                src={(ord as any).student_discount_details.id_photo_url}
-                                alt="Student ID proof"
-                                className="mt-1 h-32 w-full object-cover rounded border border-blue-200"
-                                onError={(e) => (e.currentTarget.style.display='none')}
-                              />
-                            ) : (
-                              <p className="text-neutral-400 text-[10px]">No photo uploaded</p>
-                            )}
-                          </div>
-                        )}
+                        {(ord as any).student_discount_requested && (ord as any).student_discount_details && (() => {
+                          const photoUrl = (ord as any).student_discount_details.id_photo_url || (ord as any).student_discount_details.student_id_photo_url;
+                          return (
+                            <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded text-xs space-y-2">
+                              <p className="font-bold text-blue-700 uppercase tracking-wider text-[10px]">🎓 STUDENT DISCOUNT REQUEST</p>
+                              {photoUrl ? (
+                                <img
+                                  src={photoUrl}
+                                  alt="Student ID proof"
+                                  className="mt-1 h-32 w-full object-cover rounded border border-blue-200"
+                                  onError={(e) => (e.currentTarget.style.display='none')}
+                                />
+                              ) : (
+                                <p className="text-neutral-400 text-[10px]">No photo uploaded</p>
+                              )}
+                            </div>
+                          );
+                        })()}
 
                         <div className="bg-neutral-50 p-4 rounded-lg flex flex-col md:flex-row gap-3 items-end text-xs mt-3">
                           <div className="flex gap-2 ml-auto w-full md:w-auto mt-2 md:mt-0">

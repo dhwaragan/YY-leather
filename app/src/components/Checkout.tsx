@@ -312,6 +312,7 @@ export const Checkout: React.FC = () => {
         student_discount_details: includeStudentDiscount ? {
           college_name: studentCollegeName,
           student_id_number: studentIdNumber,
+          id_photo_url: studentIdPhotoUrl,
           student_id_photo_url: studentIdPhotoUrl,
           status: 'Pending'
         } : undefined,
