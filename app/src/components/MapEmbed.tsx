@@ -91,7 +91,7 @@ export const MapEmbed: React.FC = () => {
           {/* Contact numbers */}
           <div className="flex items-center text-xs space-x-3 mb-6 font-sans text-neutral-700">
             <Phone className="w-4 h-4 text-[#5C3317] flex-shrink-0" />
-            <span>09344178585</span>
+            <a href="tel:+919344178585" className="hover:text-[#c5a059] transition-colors">93441 78585</a>
           </div>
 
           {/* Action Anchor to External Directions link */}

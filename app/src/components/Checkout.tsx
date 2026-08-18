@@ -605,7 +605,7 @@ export const Checkout: React.FC = () => {
                   </select>
                   {requiresManualQuote && (
                     <div className="text-[10px] text-blue-700 bg-blue-50 border border-blue-200 rounded p-2 mt-2">
-                      📞 Special Destination Delivery: Please contact us at <strong>09344178585</strong> for custom shipping rates to your location.
+                      📞 Special Destination Delivery: Please contact us at <strong>93441 78585</strong> for custom shipping rates to your location.
                     </div>
                   )}
                   {!requiresManualQuote && (<p className="text-[10px] text-neutral-500 mt-2">
@@ -844,7 +844,7 @@ export const Checkout: React.FC = () => {
                 
                 <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-[10px] text-blue-800 font-semibold">📞 Special Destination?</p>
-                  <p className="text-[10px] text-blue-700 mt-1">For Jammu & Kashmir and Andaman & Nicobar Islands, please contact us directly at <strong>09344178585</strong> for custom delivery rates.</p>
+                  <p className="text-[10px] text-blue-700 mt-1">For Jammu & Kashmir and Andaman & Nicobar Islands, please contact us directly at <strong>93441 78585</strong> for custom delivery rates.</p>
                 </div>
                 <p className="mt-2 text-[10px] text-neutral-500">Delivery is charged per kilogram. Rates are final and include insurance coverage.</p>
               </div>
