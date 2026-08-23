@@ -1680,11 +1680,11 @@
       "name": "Old Money Loafer - Chocolate Espresso Brown",
       "price": 1799,
       "images": [
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786717178/x1.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786717178/x2.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786717177/x3.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786717178/x4.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786717177/x5.jpg"
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x1.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x2.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717177/x3.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x4.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717177/x5.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -1723,7 +1723,7 @@
         "7": 0,
         "8": 0,
         "9": 0,
-        "10": 1,
+        "10": 0,
         "11": 1
       }
     },
@@ -2238,11 +2238,11 @@
       "name": "Dark Brown - Mafia Chelsea Elastic",
       "price": 1799,
       "images": [
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786720233/mc1.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786720234/mc.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786720235/mc3.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786720232/mc4.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/v1786720231/mc5.jpg"
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786720233/mc1.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786720234/mc.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786720235/mc3.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786720232/mc4.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786720231/mc5.jpg"
       ],
       "category": "CHELSEA BOOT",
       "sizeMRPs": {
@@ -2274,7 +2274,7 @@
         "6": 10,
         "7": 2,
         "8": 1,
-        "9": 1
+        "9": 0
       }
     },
     {
@@ -4142,12 +4142,12 @@
       "name": "Black - Penny Loafer Plain",
       "price": 1399,
       "images": [
-        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/v1786725137/a1_5cndn833q4s-1786389778655.jpg",
-        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/v1786725134/a2_nzs4z3mdnw-1786389978935.jpg",
-        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/v1786725136/a3_yfuv4zyncj-1786389985260.jpg",
-        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/v1786725135/a4_lz4jt2xksvq-1786389989997.jpg",
-        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/v1786725134/a5_msdr8a45ky-1786389995462.jpg",
-        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/v1786725137/a6_0zprgxarci5o-1786390001272.jpg"
+        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786725137/a1_5cndn833q4s-1786389778655.jpg",
+        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786725134/a2_nzs4z3mdnw-1786389978935.jpg",
+        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786725136/a3_yfuv4zyncj-1786389985260.jpg",
+        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786725135/a4_lz4jt2xksvq-1786389989997.jpg",
+        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786725134/a5_msdr8a45ky-1786389995462.jpg",
+        "https://res.cloudinary.com/crda2rxa/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786725137/a6_0zprgxarci5o-1786390001272.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -4175,7 +4175,7 @@
       "sizeQuantities": {
         "7": 5,
         "8": 5,
-        "9": 5
+        "9": 0
       }
     }
   ],

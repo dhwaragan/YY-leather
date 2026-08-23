@@ -131,6 +131,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, o
 
 
   const handleAddToCart = () => {
+    if (!user) {
+      alert("Please sign in to add products to your cart and make purchases.");
+      navigateTo("user-profile");
+      onClose();
+      return;
+    }
     for (let i = 0; i < qty; i++) {
       addToCart(product, selectedSize);
     }
@@ -139,6 +145,12 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, o
 
   const handleBuyNowSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      alert("Please sign in to make purchases.");
+      navigateTo("user-profile");
+      onClose();
+      return;
+    }
     if (!buyNowAddress.trim()) {
       alert("Please enter your delivery coordinates address!");
       return;

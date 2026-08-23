@@ -21,6 +21,12 @@ export const Checkout: React.FC = () => {
   const [selectedState, setSelectedState] = useState('Tamil Nadu');
   const [editableName, setEditableName] = useState(user?.name || '');
   
+  useEffect(() => {
+    if (!user) {
+      navigateTo('user-profile');
+    }
+  }, [user, navigateTo]);
+  
   // Birthday Benefit state
   const [includeBirthdayBenefit, setIncludeBirthdayBenefit] = useState<boolean | undefined>(undefined);
   const [birthdayGovIdNumber, setBirthdayGovIdNumber] = useState('');

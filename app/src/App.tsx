@@ -233,14 +233,7 @@ const AppCore: React.FC = () => {
     );
   }
 
-  // Show login only after data is loaded (prevents flash on refresh)
-  if (!user) {
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <LoginPage />
-      </Suspense>
-    );
-  }
+
 
   return (
     <div className="relative min-h-screen bg-neutral-50 flex flex-col justify-between">
