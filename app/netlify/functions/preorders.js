@@ -1,5 +1,5 @@
 // Preorders Netlify Function - Reads/Writes directly to Supabase for persistence
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 let SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
 if (!SUPABASE_URL.includes('pxavmpkgvonxckmbaksh')) {
@@ -13,7 +13,7 @@ if (!SUPABASE_SERVICE_KEY.includes('pxavmpkgvonxckmbaksh')) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -103,12 +103,13 @@ exports.handler = async (event) => {
 
     // PUT - Update preorder status
     if (event.httpMethod === 'PUT') {
-      const body = JSON.parse(event.body);
+      const body = JSON.parse(event.body || '{}');
       const { status, admin_note, estimated_delivery } = body;
       
-      // Extract preorder ID from URL path: /.netlify/functions/preorders/YY-PRE-12345
-      const pathParts = event.path.split('/');
-      const preorderId = pathParts[pathParts.length - 1];
+      const match = (event.path || '').match(/YY-PRE-\d+/);
+      const pathParts = (event.path || '').split('/');
+      const lastPart = pathParts[pathParts.length - 1];
+      const preorderId = match ? match[0] : (event.queryStringParameters?.id || (lastPart !== 'preorders' ? lastPart : null));
 
       if (!preorderId) {
         return { statusCode: 400, headers, body: JSON.stringify({ error: 'Preorder ID is required' }) };
@@ -121,7 +122,7 @@ exports.handler = async (event) => {
         .eq('key', 'preorders')
         .single();
 
-      if (fetchError) {
+      if (fetchError && fetchError.code !== 'PGRST116') {
         console.error('Error fetching preorders:', fetchError);
         return { statusCode: 500, headers, body: JSON.stringify({ error: fetchError.message }) };
       }
@@ -154,6 +155,45 @@ exports.handler = async (event) => {
         statusCode: 200,
         headers,
         body: JSON.stringify({ success: true })
+      };
+    }
+
+    // DELETE - Delete preorder
+    if (event.httpMethod === 'DELETE') {
+      const match = (event.path || '').match(/YY-PRE-\d+/);
+      const pathParts = (event.path || '').split('/');
+      const lastPart = pathParts[pathParts.length - 1];
+      const preorderId = match ? match[0] : (event.queryStringParameters?.id || (lastPart !== 'preorders' ? lastPart : null));
+
+      if (!preorderId) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: 'Preorder ID is required' }) };
+      }
+
+      const { data: existingData } = await supabase
+        .from('yy_store_sync')
+        .select('value')
+        .eq('key', 'preorders')
+        .single();
+
+      const existingPreorders = existingData?.value || [];
+      const filtered = existingPreorders.filter(p => p.id !== preorderId);
+
+      const { error: saveError } = await supabase
+        .from('yy_store_sync')
+        .upsert(
+          { key: 'preorders', value: filtered, updated_at: new Date().toISOString() },
+          { onConflict: 'key' }
+        );
+
+      if (saveError) {
+        console.error('Error deleting preorder from Supabase:', saveError);
+        return { statusCode: 500, headers, body: JSON.stringify({ error: saveError.message }) };
+      }
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ success: true, message: 'Preorder deleted successfully' })
       };
     }
 

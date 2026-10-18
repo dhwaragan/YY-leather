@@ -41,13 +41,20 @@ function getAi(): GoogleGenAI {
 }
 
 // Initialize Supabase Client - uses environment variables from .env file
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
+let SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
+if (!SUPABASE_URL.includes('pxavmpkgvonxckmbaksh')) {
+  SUPABASE_URL = "https://pxavmpkgvonxckmbaksh.supabase.co";
+}
 const NEW_SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
 let SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY || NEW_SUPABASE_SERVICE_KEY;
 if (!SUPABASE_SERVICE_KEY.includes('pxavmpkgvonxckmbaksh')) {
   SUPABASE_SERVICE_KEY = NEW_SUPABASE_SERVICE_KEY;
 }
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A";
+const NEW_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A";
+let SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || NEW_SUPABASE_ANON_KEY;
+if (!SUPABASE_ANON_KEY.includes('pxavmpkgvonxckmbaksh')) {
+  SUPABASE_ANON_KEY = NEW_SUPABASE_ANON_KEY;
+}
 console.log('[Supabase] Connecting to:', SUPABASE_URL);
 
 // Use Service Key if available to bypass RLS, otherwise fallback to Anon Key
@@ -1112,7 +1119,7 @@ app.get('/api/products', (req, res) => {
   res.json(db.products);
 });
 
-app.post('/api/products', authenticateAdmin, (req, res) => {
+app.post('/api/products', authenticateAdmin, async (req, res) => {
   const newProduct = req.body;
   newProduct.id = `prod-${Date.now()}`;
   newProduct.created_at = new Date().toISOString();
@@ -1123,30 +1130,47 @@ app.post('/api/products', authenticateAdmin, (req, res) => {
   newProduct.is_best_seller = !!newProduct.is_best_seller;
   newProduct.is_published = newProduct.is_published !== false;
 
+  if (IS_SERVERLESS) {
+    const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'products').single();
+    if (data?.value && Array.isArray(data.value)) db.products = data.value;
+  }
+
   db.products.unshift(newProduct);
-  saveDatabase(db, 'products');
+  await saveDatabase(db, 'products');
   res.json({ success: true, product: newProduct });
 });
 
-app.put('/api/products/:id', authenticateAdmin, (req, res) => {
+app.put('/api/products/:id', authenticateAdmin, async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
+
+  if (IS_SERVERLESS) {
+    const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'products').single();
+    if (data?.value && Array.isArray(data.value)) db.products = data.value;
+  }
+
   const index = db.products.findIndex(p => p.id === id);
   if (index !== -1) {
     db.products[index] = { ...db.products[index], ...updatedData, id };
-    saveDatabase(db, 'products');
+    await saveDatabase(db, 'products');
     return res.json({ success: true, product: db.products[index] });
   }
   res.status(404).json({ success: false, message: "Footwear not found." });
 });
 
-app.delete('/api/products/:id', authenticateAdmin, (req, res) => {
+app.delete('/api/products/:id', authenticateAdmin, async (req, res) => {
   const { id } = req.params;
+
+  if (IS_SERVERLESS) {
+    const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'products').single();
+    if (data?.value && Array.isArray(data.value)) db.products = data.value;
+  }
+
   const initialCount = db.products.length;
   db.products = db.products.filter(p => p.id !== id);
   if (db.products.length < initialCount) {
-    saveDatabase(db, 'products');
-    return res.json({ success: true });
+    await saveDatabase(db, 'products');
+    return res.json({ success: true, message: "Product deleted successfully" });
   }
   res.status(404).json({ success: false, message: "Product not found." });
 });
@@ -1332,8 +1356,12 @@ app.put('/api/orders/:id', authenticateAdmin, async (req, res) => {
   
   // In serverless, always fetch the latest to avoid overwriting concurrent orders
   if (IS_SERVERLESS) {
-    const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
-    if (data?.value) db.orders = data.value;
+    try {
+      const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
+      if (data?.value && Array.isArray(data.value)) db.orders = data.value;
+    } catch (e) {
+      console.error('Error fetching orders in PUT:', e);
+    }
   }
   
   const index = db.orders.findIndex(o => o.id === id);
@@ -1343,6 +1371,25 @@ app.put('/api/orders/:id', authenticateAdmin, async (req, res) => {
     await saveDatabase(db, 'orders');
     return res.json({ success: true, order: db.orders[index] });
   }
+
+  // Also check orders_archive
+  try {
+    const { data: archData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single();
+    if (archData?.value && Array.isArray(archData.value)) {
+      const archIndex = archData.value.findIndex((o: any) => o.id === id);
+      if (archIndex !== -1) {
+        archData.value[archIndex] = { ...archData.value[archIndex], ...req.body };
+        await supabase.from('yy_store_sync').upsert(
+          { key: 'orders_archive', value: archData.value, updated_at: new Date().toISOString() },
+          { onConflict: 'key' }
+        );
+        return res.json({ success: true, order: archData.value[archIndex] });
+      }
+    }
+  } catch (err) {
+    console.error('Error checking orders_archive in PUT:', err);
+  }
+
   res.status(404).json({ success: false, message: "Order records not found." });
 });
 
@@ -1350,8 +1397,12 @@ app.delete('/api/orders/:id', authenticateAdmin, async (req, res) => {
   const { id } = req.params;
   
   if (IS_SERVERLESS) {
-    const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
-    if (data?.value) db.orders = data.value;
+    try {
+      const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
+      if (data?.value && Array.isArray(data.value)) db.orders = data.value;
+    } catch (e) {
+      console.error('Error fetching orders in DELETE:', e);
+    }
   }
   
   const index = db.orders.findIndex(o => o.id === id);
@@ -1360,6 +1411,25 @@ app.delete('/api/orders/:id', authenticateAdmin, async (req, res) => {
     await saveDatabase(db, 'orders');
     return res.json({ success: true, message: "Order deleted successfully" });
   }
+
+  // Also check orders_archive
+  try {
+    const { data: archData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single();
+    if (archData?.value && Array.isArray(archData.value)) {
+      const archIndex = archData.value.findIndex((o: any) => o.id === id);
+      if (archIndex !== -1) {
+        archData.value.splice(archIndex, 1);
+        await supabase.from('yy_store_sync').upsert(
+          { key: 'orders_archive', value: archData.value, updated_at: new Date().toISOString() },
+          { onConflict: 'key' }
+        );
+        return res.json({ success: true, message: "Archived order deleted successfully" });
+      }
+    }
+  } catch (err) {
+    console.error('Error deleting from orders_archive:', err);
+  }
+
   res.status(404).json({ success: false, message: "Order not found" });
 });
 
@@ -1571,7 +1641,7 @@ app.post('/api/admin/store-sync/:key', authenticateAdmin, async (req, res) => {
   try {
     if (key in db) {
       (db as any)[key] = value;
-      saveDatabase(db, key);
+      await saveDatabase(db, key);
     } else {
       await syncToSupabase(key, value);
     }

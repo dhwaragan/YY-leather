@@ -71,13 +71,19 @@
 
 [[redirects]]
   from = "/api/orders/*"
-  to = "/.netlify/functions/orders"
+  to = "/.netlify/functions/orders/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/orders"
   to = "/.netlify/functions/orders"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/preorders/*"
+  to = "/.netlify/functions/preorders/:splat"
   status = 200
   force = true
 

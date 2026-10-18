@@ -1,9 +1,9 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 // In-memory database for orders (in production, use a real database)
 let orders = [];
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
   
   if (!webhookSecret) {

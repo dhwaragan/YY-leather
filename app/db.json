@@ -4711,6 +4711,100 @@
   ],
   "orders": [
     {
+      "id": "YY-ORD-87085",
+      "items": [
+        {
+          "product": {
+            "id": "prod-1783966657891",
+            "mrp": 2999,
+            "name": "Black - Wide Toe Chelsea",
+            "price": 1799,
+            "images": [
+              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639040/1th8r11ovfm-1783966645947_mn5kvk.jpg",
+              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639379/x9weaosvn1d-1783966648167_ucawvl.jpg",
+              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639379/dd06f2a3w1v-1783966647099_kooqaj.jpg",
+              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639379/mxa9czeynni-1783966647675_kqzlzm.jpg"
+            ],
+            "category": "CHELSEA BOOT",
+            "sizeMRPs": {
+              "8": 2999
+            },
+            "weight_kg": 2,
+            "created_at": "2026-07-13T18:17:37.891Z",
+            "sizePrices": {
+              "8": 1799
+            },
+            "description": "Italian Chelsea Crust Leather Boot – Black Patina\n\nCrafted from premium Italian crust leather, this Chelsea Boot combines timeless craftsmanship with modern elegance. The naturally finished crust leather develops a rich patina over time, making every pair uniquely yours. Featuring a clean, streamlined silhouette with a refined round toe, it delivers effortless sophistication for both formal and smart-casual occasions.\n\nThe elastic side panels and pull tabs ensure easy slip-on convenience, while the soft leather lining and cushioned footbed provide exceptional comfort throughout the day. Finished with a durable anti-slip outsole, this boot is designed to offer lasting performance without compromising on style.\n\nKey Features\nPremium Italian crust leather upper\nRich hand-finished surface that develops a unique patina\nClassic Chelsea boot with stretch elastic side panels\nSoft genuine leather lining for breathability\nCushioned leather footbed for all-day comfort\nDurable anti-slip outsole for reliable traction\nRear pull tabs for easy wear\nRefined round-toe silhouette for versatile styling\nPerfect for business, formal, and smart-casual wear",
+            "sizeWeights": {
+              "8": 2
+            },
+            "is_published": true,
+            "customer_email": "",
+            "is_best_seller": true,
+            "is_new_arrival": false,
+            "sizeQuantities": {
+              "8": 10
+            }
+          },
+          "quantity": 1,
+          "selectedSize": "9"
+        },
+        {
+          "product": {
+            "id": "prod-1792334813355",
+            "mrp": 10,
+            "name": "test",
+            "price": 0.01,
+            "images": [
+              "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=600&auto=format&fit=crop"
+            ],
+            "category": "CHELSEA",
+            "sizeMRPs": {
+              "5": 10
+            },
+            "weight_kg": 0.1,
+            "created_at": "2026-10-18T14:46:53.355Z",
+            "sizePrices": {
+              "5": 0.01
+            },
+            "description": "testing only ",
+            "sizeWeights": {
+              "5": 0.1
+            },
+            "is_published": true,
+            "customer_email": "",
+            "is_best_seller": false,
+            "is_new_arrival": false,
+            "sizeQuantities": {
+              "5": 10
+            }
+          },
+          "quantity": 1,
+          "selectedSize": "9"
+        }
+      ],
+      "phone": "3434",
+      "total": 2084.01,
+      "status": "Ordered",
+      "address": "sd",
+      "user_id": "5b34eeb0-56f3-40cb-942e-6c62f40933c7",
+      "created_at": "2026-10-18T16:28:16.543Z",
+      "applied_offer": "none",
+      "customer_name": "Dhwaragan Dhwaragan",
+      "customer_email": "dhwaragandhwaragan9@gmail.com",
+      "buyback_details": null,
+      "delivery_charge": 168,
+      "delivery_region": "Tamil Nadu",
+      "buyback_requested": false,
+      "razorpay_order_id": "order_rp_1792340896543",
+      "estimated_weight_kg": 2.1,
+      "razorpay_payment_id": "pay_rp_1792340896543",
+      "birthday_benefit_details": null,
+      "student_discount_details": null,
+      "birthday_benefit_requested": false,
+      "student_discount_requested": false
+    },
+    {
       "id": "YY-ORD-91610",
       "items": [
         {

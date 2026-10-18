@@ -1,11 +1,11 @@
-const Razorpay = require('razorpay');
+import Razorpay from 'razorpay';
 
 const razorpay = new Razorpay({
   key_id: process.env.VITE_RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { amount, receipt } = body;

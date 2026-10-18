@@ -1,6 +1,6 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;

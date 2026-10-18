@@ -1,4 +1,5 @@
-const serverless = require('serverless-http');
-const app = require('../../dist/server.cjs').default;
+import serverless from 'serverless-http';
+import appModule from '../../dist/server.cjs';
 
-module.exports.handler = serverless(app);
+const app = appModule.default || appModule;
+export const handler = serverless(app);

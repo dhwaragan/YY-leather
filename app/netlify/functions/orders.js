@@ -1,5 +1,5 @@
 // Orders Netlify Function - Reads/Writes directly to Supabase for persistence
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 let SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
 if (!SUPABASE_URL.includes('pxavmpkgvonxckmbaksh')) {
@@ -13,7 +13,7 @@ if (!SUPABASE_SERVICE_KEY.includes('pxavmpkgvonxckmbaksh')) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -197,58 +197,178 @@ exports.handler = async (event) => {
 
     // PUT - Update order status
     if (event.httpMethod === 'PUT') {
-      const body = JSON.parse(event.body);
+      const body = JSON.parse(event.body || '{}');
       const { status, rejection_comment } = body;
       
-      // Extract order ID from URL path: /.netlify/functions/orders/YY-ORD-12345
-      const pathParts = event.path.split('/');
-      const orderId = pathParts[pathParts.length - 1];
+      // Robust order ID extraction from regex, query parameter, or path
+      const match = (event.path || '').match(/YY-ORD-\d+/);
+      const pathParts = (event.path || '').split('/');
+      const lastPart = pathParts[pathParts.length - 1];
+      const orderId = match ? match[0] : (event.queryStringParameters?.id || (lastPart !== 'orders' ? lastPart : null));
 
       if (!orderId) {
         return { statusCode: 400, headers, body: JSON.stringify({ error: 'Order ID is required' }) };
       }
 
-      // Fetch current orders
+      // 1. Check and update active orders
       const { data: existingData, error: fetchError } = await supabase
         .from('yy_store_sync')
         .select('value')
         .eq('key', 'orders')
         .single();
 
-      if (fetchError) {
+      if (fetchError && fetchError.code !== 'PGRST116') {
         console.error('Error fetching orders:', fetchError);
         return { statusCode: 500, headers, body: JSON.stringify({ error: fetchError.message }) };
       }
 
       const existingOrders = existingData?.value || [];
-      const updatedOrders = existingOrders.map(o => {
-        if (o.id === orderId) {
-          const updated = { ...o, status };
-          if (rejection_comment) {
-            updated.rejection_comment = rejection_comment;
-          }
-          return updated;
+      const orderIndex = existingOrders.findIndex(o => o.id === orderId);
+
+      if (orderIndex !== -1) {
+        const updated = { ...existingOrders[orderIndex], ...body };
+        if (status) updated.status = status;
+        if (rejection_comment) updated.rejection_comment = rejection_comment;
+        existingOrders[orderIndex] = updated;
+
+        const { error: saveError } = await supabase
+          .from('yy_store_sync')
+          .upsert(
+            { key: 'orders', value: existingOrders, updated_at: new Date().toISOString() },
+            { onConflict: 'key' }
+          );
+
+        if (saveError) {
+          console.error('Error updating order in Supabase:', saveError);
+          return { statusCode: 500, headers, body: JSON.stringify({ error: saveError.message }) };
         }
-        return o;
-      });
 
-      // Save to Supabase
-      const { error: saveError } = await supabase
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, order: updated })
+        };
+      }
+
+      // 2. Check and update orders_archive
+      const { data: archData } = await supabase
         .from('yy_store_sync')
-        .upsert(
-          { key: 'orders', value: updatedOrders, updated_at: new Date().toISOString() },
-          { onConflict: 'key' }
-        );
+        .select('value')
+        .eq('key', 'orders_archive')
+        .single();
 
-      if (saveError) {
-        console.error('Error updating order in Supabase:', saveError);
-        return { statusCode: 500, headers, body: JSON.stringify({ error: saveError.message }) };
+      const archOrders = archData?.value || [];
+      const archIndex = archOrders.findIndex(o => o.id === orderId);
+
+      if (archIndex !== -1) {
+        const updatedArch = { ...archOrders[archIndex], ...body };
+        if (status) updatedArch.status = status;
+        if (rejection_comment) updatedArch.rejection_comment = rejection_comment;
+        archOrders[archIndex] = updatedArch;
+
+        const { error: saveArchError } = await supabase
+          .from('yy_store_sync')
+          .upsert(
+            { key: 'orders_archive', value: archOrders, updated_at: new Date().toISOString() },
+            { onConflict: 'key' }
+          );
+
+        if (saveArchError) {
+          console.error('Error updating archived order in Supabase:', saveArchError);
+          return { statusCode: 500, headers, body: JSON.stringify({ error: saveArchError.message }) };
+        }
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, order: updatedArch })
+        };
       }
 
       return {
-        statusCode: 200,
+        statusCode: 404,
         headers,
-        body: JSON.stringify({ success: true })
+        body: JSON.stringify({ success: false, error: 'Order not found' })
+      };
+    }
+
+    // DELETE - Delete order from active or archive
+    if (event.httpMethod === 'DELETE') {
+      const match = (event.path || '').match(/YY-ORD-\d+/);
+      const pathParts = (event.path || '').split('/');
+      const lastPart = pathParts[pathParts.length - 1];
+      const orderId = match ? match[0] : (event.queryStringParameters?.id || (lastPart !== 'orders' ? lastPart : null));
+
+      if (!orderId) {
+        return { statusCode: 400, headers, body: JSON.stringify({ error: 'Order ID is required' }) };
+      }
+
+      // 1. Check and delete from active orders
+      const { data: existingData } = await supabase
+        .from('yy_store_sync')
+        .select('value')
+        .eq('key', 'orders')
+        .single();
+
+      const existingOrders = existingData?.value || [];
+      const orderFound = existingOrders.some(o => o.id === orderId);
+
+      if (orderFound) {
+        const filtered = existingOrders.filter(o => o.id !== orderId);
+        const { error: saveError } = await supabase
+          .from('yy_store_sync')
+          .upsert(
+            { key: 'orders', value: filtered, updated_at: new Date().toISOString() },
+            { onConflict: 'key' }
+          );
+
+        if (saveError) {
+          console.error('Error deleting order from Supabase:', saveError);
+          return { statusCode: 500, headers, body: JSON.stringify({ error: saveError.message }) };
+        }
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, message: 'Order deleted successfully' })
+        };
+      }
+
+      // 2. Check and delete from orders_archive
+      const { data: archData } = await supabase
+        .from('yy_store_sync')
+        .select('value')
+        .eq('key', 'orders_archive')
+        .single();
+
+      const archOrders = archData?.value || [];
+      const archFound = archOrders.some(o => o.id === orderId);
+
+      if (archFound) {
+        const filteredArch = archOrders.filter(o => o.id !== orderId);
+        const { error: saveArchError } = await supabase
+          .from('yy_store_sync')
+          .upsert(
+            { key: 'orders_archive', value: filteredArch, updated_at: new Date().toISOString() },
+            { onConflict: 'key' }
+          );
+
+        if (saveArchError) {
+          console.error('Error deleting archived order from Supabase:', saveArchError);
+          return { statusCode: 500, headers, body: JSON.stringify({ error: saveArchError.message }) };
+        }
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, message: 'Archived order deleted successfully' })
+        };
+      }
+
+      return {
+        statusCode: 404,
+        headers,
+        body: JSON.stringify({ success: false, error: 'Order not found' })
       };
     }
 

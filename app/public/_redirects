@@ -2,6 +2,10 @@
 /api/razorpay/create-order  /.netlify/functions/razorpay-create-order  200
 /api/razorpay/verify-payment  /.netlify/functions/razorpay-verify-payment  200
 /api/razorpay/webhook  /.netlify/functions/razorpay-webhook  200
+/api/orders-archive  /.netlify/functions/orders?only_archived=true  200
+/api/orders/*  /.netlify/functions/orders/:splat  200
 /api/orders  /.netlify/functions/orders  200
+/api/preorders/*  /.netlify/functions/preorders/:splat  200
+/api/preorders  /.netlify/functions/preorders  200
 /api/*  /.netlify/functions/api  200
 /*  /index.html  200

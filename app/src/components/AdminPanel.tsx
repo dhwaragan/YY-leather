@@ -1035,23 +1035,47 @@ export const AdminPanel: React.FC = () => {
     if (deleteConfirmType === 'product') {
       const updated = products.filter(p => p.id !== deleteConfirmId);
       await syncToServer('products', updated);
-      await refreshAllData(true);
+      try {
+        await supabase.from('yy_store_sync').upsert({ key: 'products', value: updated, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+      } catch (err) {
+        console.warn('Direct supabase product delete fallback:', err);
+      }
       setProducts(updated);
+      await refreshAllData(true);
     } else if (deleteConfirmType === 'offer') {
       const updated = offers.filter(o => o.id !== deleteConfirmId);
       await syncToServer('offers', updated);
-      await refreshAllData(true);
+      try {
+        await supabase.from('yy_store_sync').upsert({ key: 'offers', value: updated, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+      } catch (err) {
+        console.warn('Direct supabase offer delete fallback:', err);
+      }
       setOffers(updated);
+      await refreshAllData(true);
     } else if (deleteConfirmType === 'order') {
       try {
         await adminFetch(`/api/orders/${deleteConfirmId}`, {
           method: 'DELETE'
         });
-        // Force refresh all context data so the order list updates on screen immediately
-        await refreshAllData(true);
       } catch (e) {
-        console.warn('Failed to delete order from local API', e);
+        console.warn('Failed to delete order from API', e);
       }
+      try {
+        const { data: ordData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
+        if (ordData?.value && Array.isArray(ordData.value)) {
+          const filtered = ordData.value.filter((o: any) => o.id !== deleteConfirmId);
+          await supabase.from('yy_store_sync').upsert({ key: 'orders', value: filtered, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        }
+        const { data: archData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single();
+        if (archData?.value && Array.isArray(archData.value)) {
+          const filteredArch = archData.value.filter((o: any) => o.id !== deleteConfirmId);
+          await supabase.from('yy_store_sync').upsert({ key: 'orders_archive', value: filteredArch, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+        }
+      } catch (err) {
+        console.warn('Direct supabase order delete fallback:', err);
+      }
+      // Force refresh all context data so the order list updates on screen immediately
+      await refreshAllData(true);
     }
     setDeleteConfirmId(null); setDeleteConfirmType(null);
   };

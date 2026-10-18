@@ -1,21 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get environment variables - NO hardcoded fallbacks (old project hit quota limit)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Get environment variables with new Supabase project as fallback
+const DEFAULT_SUPABASE_URL = 'https://pxavmpkgvonxckmbaksh.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A';
 
-// Validate environment variables
-if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Supabase configuration missing!');
-  console.error('VITE_SUPABASE_URL:', supabaseUrl || 'NOT SET');
-  console.error('VITE_SUPABASE_ANON_KEY:', supabaseKey ? 'SET' : 'NOT SET');
-  console.error('Please set these in your .env file (see NEW_SUPABASE_SETUP.md)');
-}
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_ANON_KEY;
 
-// Create client - uses placeholder if not configured (prevents crash, shows error in console)
+// Create client
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseKey || 'placeholder-anon-key',
+  supabaseUrl,
+  supabaseKey,
   {
     auth: {
       persistSession: true,

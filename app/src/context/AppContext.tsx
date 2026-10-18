@@ -1245,6 +1245,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         removeCache(PUBLIC_DATA_KEY);
         return true;
       }
+      // Fallback: sync directly to Supabase
+      try {
+        const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'products').single();
+        if (data?.value && Array.isArray(data.value)) {
+          const filtered = data.value.filter((p: any) => p.id !== id);
+          await supabase.from('yy_store_sync').upsert({ key: 'products', value: filtered, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+          setProducts(prev => prev.filter(p => p.id !== id));
+          removeCache(PUBLIC_DATA_KEY);
+          return true;
+        }
+      } catch (err) {
+        console.warn('Fallback delete product error:', err);
+      }
       return false;
     } catch (e) {
       console.error(e);
@@ -1271,6 +1284,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
         removeCache(ORDERS_KEY);
         return true;
+      }
+      // Fallback: update directly in Supabase
+      try {
+        const { data: ordData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders').single();
+        if (ordData?.value && Array.isArray(ordData.value)) {
+          const updated = ordData.value.map((o: any) => o.id === id ? { ...o, status } : o);
+          await supabase.from('yy_store_sync').upsert({ key: 'orders', value: updated, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+          setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+          removeCache(ORDERS_KEY);
+          return true;
+        }
+        const { data: archData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single();
+        if (archData?.value && Array.isArray(archData.value)) {
+          const updatedArch = archData.value.map((o: any) => o.id === id ? { ...o, status } : o);
+          await supabase.from('yy_store_sync').upsert({ key: 'orders_archive', value: updatedArch, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+          setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+          removeCache(ORDERS_KEY);
+          return true;
+        }
+      } catch (err) {
+        console.warn('Fallback updateOrderStatus error:', err);
       }
       return false;
     } catch (e) {
