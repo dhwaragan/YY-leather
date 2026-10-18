@@ -1,9 +1,9 @@
 // Orders Netlify Function - Reads/Writes directly to Supabase for persistence
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://xslhdwoiqbpnzzhjxzod.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
 // Use the service role key to bypass RLS policies
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NjcwNDY5MCwiZXhwIjoyMTAyMjgwNjkwfQ.wym9k3nBqRQXjyXDaHO9L83u8f7w3djaNI8SBLYzN38";
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
@@ -21,7 +21,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    // GET - Fetch all orders from Supabase
+    // GET - Fetch orders from Supabase (user-scoped or active)
     if (event.httpMethod === 'GET') {
       const { data, error } = await supabase
         .from('yy_store_sync')
@@ -34,7 +34,68 @@ exports.handler = async (event) => {
         return { statusCode: 500, headers, body: JSON.stringify({ error: error.message }) };
       }
       
-      const orders = data?.value || [];
+      let orders = data?.value || [];
+
+      // Check if user-specific query
+      const pathParts = (event.path || '').split('/');
+      const userIndex = pathParts.indexOf('user');
+      const userIdFromPath = userIndex !== -1 && pathParts[userIndex + 1] ? pathParts[userIndex + 1] : null;
+      const targetUserId = userIdFromPath || event.queryStringParameters?.user_id;
+      const targetEmail = event.queryStringParameters?.customer_email?.toLowerCase();
+
+      if (targetUserId || targetEmail) {
+        // Filter orders for this specific customer
+        const filtered = orders.filter(o => 
+          (targetUserId && o.user_id === targetUserId) ||
+          (targetEmail && o.customer_email && o.customer_email.toLowerCase() === targetEmail)
+        );
+        return { statusCode: 200, headers, body: JSON.stringify(filtered) };
+      }
+
+      // Check if archived orders endpoint requested
+      if (event.path.includes('archive') || event.queryStringParameters?.only_archived === 'true') {
+        const { data: archData } = await supabase
+          .from('yy_store_sync')
+          .select('value')
+          .eq('key', 'orders_archive')
+          .single();
+        return { statusCode: 200, headers, body: JSON.stringify(archData?.value || []) };
+      }
+
+      // Auto-archive orders completed over 7 days ago
+      const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const activeOrders = [];
+      const toArchive = [];
+      for (const o of orders) {
+        const isCompleted = o.status === 'Delivered' || o.status === 'Cancelled';
+        const orderTime = o.created_at ? new Date(o.created_at).getTime() : 0;
+        if (isCompleted && orderTime < sevenDaysAgo) {
+          toArchive.push(o);
+        } else {
+          activeOrders.push(o);
+        }
+      }
+
+      if (toArchive.length > 0) {
+        // Run background sync to archive
+        supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single().then(({ data: currentArch }) => {
+          const existing = currentArch?.value && Array.isArray(currentArch.value) ? currentArch.value : [];
+          const cleaned = toArchive.map(o => {
+            const c = { ...o };
+            if (c.student_discount_details?.id_photo_url?.startsWith('data:image/')) {
+              c.student_discount_details.id_photo_url = 'https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg';
+            }
+            if (c.birthday_benefit_details?.id_photo_url?.startsWith('data:image/')) {
+              c.birthday_benefit_details.id_photo_url = 'https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg';
+            }
+            return c;
+          });
+          supabase.from('yy_store_sync').upsert({ key: 'orders_archive', value: [...cleaned, ...existing], updated_at: new Date().toISOString() }, { onConflict: 'key' }).catch(console.error);
+          supabase.from('yy_store_sync').upsert({ key: 'orders', value: activeOrders, updated_at: new Date().toISOString() }, { onConflict: 'key' }).catch(console.error);
+        }).catch(console.error);
+        orders = activeOrders;
+      }
+
       return { statusCode: 200, headers, body: JSON.stringify(orders) };
     }
 

@@ -41,9 +41,9 @@ function getAi(): GoogleGenAI {
 }
 
 // Initialize Supabase Client - uses environment variables from .env file
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://xslhdwoiqbpnzzhjxzod.supabase.co";
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MDQ2OTAsImV4cCI6MjEwMjI4MDY5MH0.3y36PEio0C_kNuU5i2_PklPq8fgSJPCX1ebDkql7rT0";
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A";
 console.log('[Supabase] Connecting to:', SUPABASE_URL);
 
 // Use Service Key if available to bypass RLS, otherwise fallback to Anon Key
@@ -976,9 +976,9 @@ app.use(async (req, res, next) => {
     req.url = req.url.replace('/.netlify/functions/api', '/api');
   }
   
-  // In serverless mode, pullFromSupabase() is TTL-guarded internally (2 min cooldown)
-  // It will skip the actual fetch if data was pulled recently
-  if (IS_SERVERLESS && req.url.startsWith('/api')) {
+  // In serverless mode, pullFromSupabase() is called only for admin routes or sync requests
+  // to avoid repeatedly downloading the full product catalog on regular customer visits
+  if (IS_SERVERLESS && (req.url.includes('/admin') || req.url.includes('sync-from-supabase'))) {
     try {
       await pullFromSupabase();
     } catch (e) {
@@ -1149,28 +1149,71 @@ app.delete('/api/products/:id', authenticateAdmin, (req, res) => {
 
 
 // ---------------- ORDERS ----------------
-app.get('/api/orders', async (req, res) => {
-  // If local db has no orders, pull from Supabase (localhost dev scenario)
-  // This lets you see live orders from the Netlify deployment on your local machine
-  if (!db.orders || db.orders.length === 0) {
-    try {
-      console.log('[Orders] Local db has no orders — pulling from Supabase...');
-      const { data, error } = await supabase
-        .from('yy_store_sync')
-        .select('value')
-        .eq('key', 'orders')
-        .single();
-      if (!error && data?.value && Array.isArray(data.value) && data.value.length > 0) {
-        db.orders = data.value;
-        // Cache to local db.json so subsequent requests are instant
-        if (!IS_SERVERLESS) {
-          try { fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf8'); } catch {}
-        }
-        console.log(`[Orders] Synced ${db.orders.length} orders from Supabase.`);
-      }
-    } catch (e) {
-      console.warn('[Orders] Could not pull orders from Supabase:', e);
+// Helper to auto-archive orders completed over 7 days (1 week) ago
+async function autoArchiveOldOrders(ordersList: any[]) {
+  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const active: any[] = [];
+  const toArchive: any[] = [];
+
+  for (const o of ordersList) {
+    const isCompleted = o.status === 'Delivered' || o.status === 'Cancelled';
+    const orderTime = o.created_at ? new Date(o.created_at).getTime() : 0;
+    if (isCompleted && orderTime < sevenDaysAgo) {
+      toArchive.push(o);
+    } else {
+      active.push(o);
     }
+  }
+
+  if (toArchive.length > 0) {
+    try {
+      const { data: archData } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single();
+      const currentArchive = archData?.value && Array.isArray(archData.value) ? archData.value : [];
+      const cleaned = toArchive.map(o => {
+        const c = { ...o };
+        if (c.student_discount_details?.id_photo_url?.startsWith('data:image/')) {
+          c.student_discount_details.id_photo_url = 'https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg';
+        }
+        if (c.birthday_benefit_details?.id_photo_url?.startsWith('data:image/')) {
+          c.birthday_benefit_details.id_photo_url = 'https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg';
+        }
+        return c;
+      });
+      await supabase.from('yy_store_sync').upsert({ key: 'orders_archive', value: [...cleaned, ...currentArchive], updated_at: new Date().toISOString() }, { onConflict: 'key' });
+      await supabase.from('yy_store_sync').upsert({ key: 'orders', value: active, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+      return active;
+    } catch (err) {
+      console.warn('[AutoArchive] Error:', err);
+    }
+  }
+  return ordersList;
+}
+
+app.get('/api/orders-archive', async (req, res) => {
+  try {
+    const { data } = await supabase.from('yy_store_sync').select('value').eq('key', 'orders_archive').single();
+    res.json(data?.value || []);
+  } catch (e: any) {
+    res.status(500).json({ error: 'Failed to fetch archived orders', message: e.message });
+  }
+});
+
+app.get('/api/orders', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('yy_store_sync')
+      .select('value')
+      .eq('key', 'orders')
+      .single();
+    if (!error && data?.value && Array.isArray(data.value)) {
+      const archived = await autoArchiveOldOrders(data.value);
+      db.orders = archived;
+      if (!IS_SERVERLESS) {
+        try { fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), 'utf8'); } catch {}
+      }
+    }
+  } catch (e) {
+    console.warn('[Orders] Could not pull orders from Supabase:', e);
   }
   res.json(db.orders);
 });

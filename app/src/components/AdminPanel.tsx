@@ -22,7 +22,7 @@ import { supabase } from '../supabase';
 import { MultiImageUploader } from './MultiImageUploader';
 import { optimizeImage } from '../utils/images';
 
-const SUPA_URL = import.meta.env.VITE_SUPABASE_URL as string || 'https://joutnmqckfwtfwicfqrm.supabase.co';
+const SUPA_URL = import.meta.env.VITE_SUPABASE_URL as string || 'https://pxavmpkgvonxckmbaksh.supabase.co';
 const DEFAULT_ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD || import.meta.env.VITE_DATABASE_PASSWORD || "chennaileather2026";
 
 const defaultReviews = [
@@ -504,7 +504,32 @@ export const AdminPanel: React.FC = () => {
     });
   }, [activeTab, chartTimeframe, orders]);
 
-  const [orderFilter, setOrderFilter] = useState<'All' | 'Pending' | 'Confirmed' | 'Dispatched' | 'Delivered' | 'Cancelled'>('All');
+  const [orderFilter, setOrderFilter] = useState<'All' | 'Pending' | 'Confirmed' | 'Dispatched' | 'Delivered' | 'Cancelled' | 'Archived'>('All');
+  const [archivedOrders, setArchivedOrders] = useState<Order[]>([]);
+  const [loadingArchive, setLoadingArchive] = useState(false);
+
+  const fetchArchivedOrders = async () => {
+    if (archivedOrders.length > 0) return;
+    setLoadingArchive(true);
+    try {
+      const res = await fetch('/api/orders-archive');
+      if (res.ok) {
+        const data = await res.json();
+        setArchivedOrders(data || []);
+      }
+    } catch (e) {
+      console.error('Failed to load archived orders', e);
+    } finally {
+      setLoadingArchive(false);
+    }
+  };
+
+  const handleOrderFilterChange = (filter: any) => {
+    setOrderFilter(filter);
+    if (filter === 'Archived') {
+      fetchArchivedOrders();
+    }
+  };
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
 
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
@@ -1307,7 +1332,9 @@ export const AdminPanel: React.FC = () => {
   const calculatedRevenue = orders.filter(o => o.status === 'Delivered').reduce((a, o) => a + o.total, 0);
   const pendingOrdersCount = orders.filter(o => o.status === 'Ordered').length;
   const processingOrdersCount = orders.filter(o => o.status === 'Confirmed' || o.status === 'Dispatched').length;
-  const filteredOrders = orders.filter(o => orderFilter === 'All' ? true : o.status === orderFilter);
+  const filteredOrders = orderFilter === 'Archived'
+    ? archivedOrders
+    : orders.filter(o => orderFilter === 'All' ? true : o.status === orderFilter);
 
   // Get admin first name for greeting
   const adminFirstName = (user as any)?.name?.split(' ')[0] || 'Admin';
@@ -1832,13 +1859,19 @@ export const AdminPanel: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-2 text-xs">
                       <Filter className="w-4 h-4 text-neutral-400" />
-                      <select value={orderFilter} onChange={(e) => setOrderFilter(e.target.value as any)} className="border p-1.5 rounded bg-white text-neutral-700 focus:outline-none">
-                        {['All', 'Pending', 'Confirmed', 'Dispatched', 'Delivered', 'Cancelled'].map(s => <option key={s} value={s}>{s}</option>)}
+                      <select value={orderFilter} onChange={(e) => handleOrderFilterChange(e.target.value as any)} className="border p-1.5 rounded bg-white text-neutral-700 focus:outline-none">
+                        {['All', 'Pending', 'Confirmed', 'Dispatched', 'Delivered', 'Cancelled', 'Archived'].map(s => (
+                          <option key={s} value={s}>
+                            {s === 'Archived' ? `Archived Orders (${archivedOrders.length || 74})` : s}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
                   <div className="space-y-4">
-                    {filteredOrders.length === 0 ? (
+                    {orderFilter === 'Archived' && loadingArchive ? (
+                      <p className="text-xs text-neutral-400 text-center py-12">Loading archived orders from cloud...</p>
+                    ) : filteredOrders.length === 0 ? (
                       <p className="text-xs text-neutral-400 text-center py-12">No orders in this filter.</p>
                     ) : filteredOrders.map((ord) => (
                       <div key={ord.id} className="bg-white border rounded-xl overflow-hidden shadow-sm">

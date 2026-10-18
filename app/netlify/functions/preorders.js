@@ -1,9 +1,9 @@
 // Preorders Netlify Function - Reads/Writes directly to Supabase for persistence
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://xslhdwoiqbpnzzhjxzod.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
 // Use the service role key to bypass RLS policies
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbGhkd29pcWJwbnp6aGp4em9kIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NjcwNDY5MCwiZXhwIjoyMTAyMjgwNjkwfQ.wym9k3nBqRQXjyXDaHO9L83u8f7w3djaNI8SBLYzN38";
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
