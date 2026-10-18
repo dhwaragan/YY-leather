@@ -1,10 +1,13 @@
 // Orders Netlify Function - Reads/Writes directly to Supabase for persistence
 const { createClient } = require('@supabase/supabase-js');
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
+let SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
+if (!SUPABASE_URL.includes('pxavmpkgvonxckmbaksh')) {
+  SUPABASE_URL = "https://pxavmpkgvonxckmbaksh.supabase.co";
+}
 const NEW_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
 let SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || NEW_SERVICE_KEY;
-if (SUPABASE_SERVICE_KEY.includes('xslhdwoiqbpnzzhjxzod')) {
+if (!SUPABASE_SERVICE_KEY.includes('pxavmpkgvonxckmbaksh')) {
   SUPABASE_SERVICE_KEY = NEW_SERVICE_KEY;
 }
 
