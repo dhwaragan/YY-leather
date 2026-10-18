@@ -4,6 +4,17 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[build.environment]
+  VITE_SUPABASE_URL = "https://pxavmpkgvonxckmbaksh.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A"
+  SUPABASE_URL = "https://pxavmpkgvonxckmbaksh.supabase.co"
+  SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A"
+  SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo"
+  VITE_RAZORPAY_KEY_ID = "rzp_live_TFnYWaFof1ynO6"
+  RAZORPAY_KEY_SECRET = "P2ba701WLFrmPQM4XA1pk1q6"
+  VITE_ADMIN_PASSWORD = "YYLeathers@SecureAdmin2026!"
+  VITE_ADMIN_EMAILS = "dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,dhwaraganwebsite@gmail.com"
+
 [functions]
   node_bundler = "esbuild"
 
@@ -11,27 +22,29 @@
   command = "npm run dev"
   port = 3000
 
-# Cache static assets aggressively - reduces bandwidth and page load time
+# ----------------- SECURITY HEADERS (A+ RATING) -----------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self \"https://checkout.razorpay.com\" \"https://api.razorpay.com\")"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https://res.cloudinary.com; connect-src 'self' https: wss:; frame-src 'self' https://maps.google.com https://www.google.com https://checkout.razorpay.com https://api.razorpay.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.razorpay.com;"
+
+# ----------------- IMMUTABLE STATIC ASSETS -----------------
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# ----------------- PRIVATE API ENDPOINTS (NO CACHE) -----------------
 [[headers]]
-  for = "/*"
+  for = "/api/*"
   [headers.values]
-    Cache-Control = "public, max-age=300"
-
-# API caching headers - reduce repeated Supabase downloads
-[[headers]]
-  for = "/api/orders"
-  [headers.values]
-    Cache-Control = "public, max-age=60"
-
-[[headers]]
-  for = "/api/preorders"
-  [headers.values]
-    Cache-Control = "public, max-age=60"
+    Cache-Control = "no-store, no-cache, must-revalidate, private"
+    Pragma = "no-cache"
 
 [[redirects]]
   from = "/api/razorpay/create-order"
@@ -52,8 +65,26 @@
   force = true
 
 [[redirects]]
+  from = "/api/orders-archive"
+  to = "/.netlify/functions/orders?only_archived=true"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/orders/*"
+  to = "/.netlify/functions/orders"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/orders"
   to = "/.netlify/functions/orders"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/preorders"
+  to = "/.netlify/functions/preorders"
   status = 200
   force = true
 
@@ -65,5 +96,5 @@
 
 [[redirects]]
   from = "/*"
-  to = "/maintenance.html"
+  to = "/index.html"
   status = 200
