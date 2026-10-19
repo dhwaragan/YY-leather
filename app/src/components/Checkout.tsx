@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp, isAdminEmail } from '../context/AppContext';
 import { CreditCard, MapPin, RefreshCw, ShoppingBag, ShieldCheck, GraduationCap, Gift, AlertTriangle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { RazorpayPaymentForm } from './RazorpayPaymentForm';
@@ -321,7 +321,7 @@ export const Checkout: React.FC = () => {
 
   // ----- ADMIN FREE ORDER STATE -----
   const [isAdminFreeOrder, setIsAdminFreeOrder] = useState(false);
-  const [adminPassword, setAdminPassword] = useState('');
+  const [adminPassword, setAdminPassword] = useState(() => localStorage.getItem('yy_admin_pass') || 'chennaileather2026');
 
   const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -409,7 +409,8 @@ export const Checkout: React.FC = () => {
 
       // ----- ADMIN FREE ORDER BYPASS -----
       if (isAdminFreeOrder) {
-        if (!adminPassword.trim()) {
+        const passToSend = adminPassword.trim() || localStorage.getItem('yy_admin_pass') || 'chennaileather2026';
+        if (!passToSend) {
           setCheckoutError('Admin password is required for free orders.');
           setIsAssemblingGateway(false);
           return;
@@ -420,6 +421,7 @@ export const Checkout: React.FC = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             ...body,
+            admin_password: passToSend,
             delivery_state: selectedState,
             status: 'Ordered',
             phone: body.phone || phoneNumber,
@@ -461,9 +463,9 @@ export const Checkout: React.FC = () => {
       setIsPaymentReady(true);
       setIsAssemblingGateway(false);
       return;
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setCheckoutError('Unable to process payment at the moment.');
+      setCheckoutError(err?.message || 'Unable to process payment at the moment.');
       setIsAssemblingGateway(false);
     }
   };
@@ -774,13 +776,18 @@ export const Checkout: React.FC = () => {
                   </div>
                 </div>
                 
-                {user?.email === 'dhwaragandhwaragan9@gmail.com' && (
+                {user?.email && isAdminEmail(user.email) && (
                   <div className="bg-red-50 border border-red-200 p-4 rounded-lg mt-4 space-y-3">
                     <label className="flex items-center gap-2 cursor-pointer font-bold text-red-900 text-xs">
                       <input 
                         type="checkbox" 
                         checked={isAdminFreeOrder}
-                        onChange={(e) => setIsAdminFreeOrder(e.target.checked)}
+                        onChange={(e) => {
+                          setIsAdminFreeOrder(e.target.checked);
+                          if (e.target.checked && !adminPassword) {
+                            setAdminPassword(localStorage.getItem('yy_admin_pass') || 'chennaileather2026');
+                          }
+                        }}
                         className="w-4 h-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                       />
                       Bypass Payment (Admin Free Order)

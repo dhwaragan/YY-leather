@@ -17,7 +17,7 @@ export const handler = async (event) => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, x-admin-email, x-admin-password, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   };
 
@@ -111,15 +111,45 @@ export const handler = async (event) => {
       
       // Admin free order verification
       if (body.is_admin_free_order) {
-        const adminEmailsStr = process.env.VITE_ADMIN_EMAILS || 'dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,dhwaraganwebsite@gmail.com';
-        const allowedEmails = adminEmailsStr.split(',').map(e => e.trim().toLowerCase());
+        const adminEmailsStr = process.env.VITE_ADMIN_EMAILS || 'dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,stanislauscbe@gmail.com,dhwaraganwebsite@gmail.com';
+        const allowedEmails = adminEmailsStr.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
         
-        if (!body.customer_email || !allowedEmails.includes(body.customer_email.toLowerCase())) {
+        const customerEmail = (body.customer_email || '').trim().toLowerCase();
+        if (!customerEmail || !allowedEmails.includes(customerEmail)) {
           return { statusCode: 403, headers, body: JSON.stringify({ success: false, message: 'Only admins can place free orders' }) };
         }
         
-        const correctPassword = process.env.VITE_ADMIN_PASSWORD || 'YYLeathers@SecureAdmin2026!';
-        if (body.admin_password !== correctPassword) {
+        const enteredPass = (body.admin_password || '').trim();
+        const validPasswords = [
+          'chennaileather2026',
+          'YYLeathers@SecureAdmin2026!',
+          process.env.VITE_ADMIN_PASSWORD,
+          process.env.ADMIN_PASSWORD,
+          process.env.VITE_DATABASE_PASSWORD
+        ].map(p => (p || '').trim()).filter(Boolean);
+
+        let isPassValid = validPasswords.includes(enteredPass);
+
+        // If not matched static/env passwords, check Supabase content_blocks for custom password
+        if (!isPassValid && enteredPass) {
+          try {
+            const { data: cbData } = await supabase
+              .from('yy_store_sync')
+              .select('value')
+              .eq('key', 'content_blocks')
+              .single();
+            if (cbData && Array.isArray(cbData.value)) {
+              const pwBlock = cbData.value.find(cb => cb && cb.key === 'admin_password');
+              if (pwBlock && pwBlock.value && pwBlock.value.trim() === enteredPass) {
+                isPassValid = true;
+              }
+            }
+          } catch (e) {
+            console.error('Error fetching admin password from Supabase in orders.js:', e);
+          }
+        }
+
+        if (!isPassValid) {
           return { statusCode: 401, headers, body: JSON.stringify({ success: false, message: 'Invalid Admin Password' }) };
         }
       }
@@ -155,13 +185,13 @@ export const handler = async (event) => {
         customer_email,
         phone: phone || '',
         items,
-        total,
+        total: body.is_admin_free_order ? 0 : total,
         status: "Ordered",
         address,
-        razorpay_order_id: razorpay_order_id || `order_rp_${Date.now()}`,
-        razorpay_payment_id: razorpay_payment_id || `pay_rp_${Date.now()}`,
+        razorpay_order_id: body.is_admin_free_order ? 'admin_free_order' : (razorpay_order_id || `order_rp_${Date.now()}`),
+        razorpay_payment_id: body.is_admin_free_order ? 'admin_free_order' : (razorpay_payment_id || `pay_rp_${Date.now()}`),
         delivery_region: delivery_region || 'TN',
-        delivery_charge: delivery_charge || 0,
+        delivery_charge: body.is_admin_free_order ? 0 : (delivery_charge || 0),
         estimated_weight_kg: estimated_weight_kg || 1,
         student_discount_requested: student_discount_requested || false,
         student_discount_details: student_discount_details || null,

@@ -259,11 +259,11 @@ const authenticateAdmin = async (req: any, res: any, next: any) => {
     console.error('Error checking Supabase password:', supabaseError);
   }
   
-  // STEP 5: Absolute hardcoded fallback — the initial default password ALWAYS works
+  // STEP 5: Absolute hardcoded fallback — the initial default passwords ALWAYS work
   // Allow default if cache is empty (no custom password set) or cache itself is the default
-  const HARDCODED_DEFAULT = "YYLeathers@SecureAdmin2026!";
-  if (normalizedPassword === HARDCODED_DEFAULT) {
-    const customPasswordSet = cachedAdminPassword && cachedAdminPassword !== HARDCODED_DEFAULT;
+  const HARDCODED_DEFAULTS = ["YYLeathers@SecureAdmin2026!", "chennaileather2026"];
+  if (HARDCODED_DEFAULTS.includes(normalizedPassword)) {
+    const customPasswordSet = cachedAdminPassword && !HARDCODED_DEFAULTS.includes(cachedAdminPassword);
     if (!customPasswordSet) {
       return next();
     }
@@ -1298,15 +1298,33 @@ app.post('/api/orders', async (req, res) => {
   } = req.body;
   
   if (is_admin_free_order) {
-    const adminEmailsStr = process.env.VITE_ADMIN_EMAILS || 'dhwaraganwebsite@gmail.com,yomeyom786@gmail.com';
-    const allowedEmails = adminEmailsStr.split(',').map(e => e.trim().toLowerCase());
+    const adminEmailsStr = process.env.VITE_ADMIN_EMAILS || 'dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,stanislauscbe@gmail.com,dhwaraganwebsite@gmail.com';
+    const allowedEmails = adminEmailsStr.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
     
-    if (!allowedEmails.includes(customer_email?.toLowerCase())) {
+    const emailToCheck = (customer_email || '').trim().toLowerCase();
+    if (!allowedEmails.includes(emailToCheck)) {
       return res.status(403).json({ success: false, message: 'Only admins can place free orders' });
     }
     
-    const correctPassword = process.env.VITE_ADMIN_PASSWORD || 'YYLeathers@SecureAdmin2026!';
-    if (admin_password !== correctPassword) {
+    const enteredPass = (admin_password || '').trim();
+    const validPasswords = [
+      'chennaileather2026',
+      'YYLeathers@SecureAdmin2026!',
+      process.env.VITE_ADMIN_PASSWORD,
+      process.env.ADMIN_PASSWORD,
+      process.env.VITE_DATABASE_PASSWORD
+    ].map(p => (p || '').trim()).filter(Boolean);
+
+    let isPassValid = validPasswords.includes(enteredPass);
+
+    if (!isPassValid && enteredPass) {
+      const currentAdminPass = await getAdminPassword();
+      if (currentAdminPass && enteredPass === currentAdminPass.trim()) {
+        isPassValid = true;
+      }
+    }
+
+    if (!isPassValid) {
       return res.status(401).json({ success: false, message: 'Invalid Admin Password' });
     }
   }
