@@ -375,6 +375,10 @@ export const AdminPanel: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchSupabaseStatus();
+  }, []);
+
+  useEffect(() => {
     if (activeTab === 'supabase') fetchSupabaseStatus();
   }, [activeTab]);
 
@@ -978,11 +982,20 @@ export const AdminPanel: React.FC = () => {
       }
       
       if (success) {
+        setProducts(prev => {
+          if (editingProductId) {
+            return prev.map(p => p.id === editingProductId ? { ...p, ...payload } : p);
+          } else {
+            return [payload, ...prev];
+          }
+        });
         setShowProductModal(false);
         setEditingProductId(null);
         setPName(''); setPDesc(''); setPImgs([]);
         setPMRP(undefined); setPWeight(1); setPSizePrices({}); setPSizeMRPs({}); setPSizeWeights({}); setPSizeQuantities({});
         setPNew(false); setPBest(false); setPPub(true);
+      } else {
+        alert('Could not save product. Please check connection and try again.');
       }
     } finally {
       setSavingProduct(false);
@@ -1988,7 +2001,7 @@ export const AdminPanel: React.FC = () => {
                             <button onClick={() => { setDeleteConfirmId(ord.id); setDeleteConfirmType('order'); }} className="px-2 py-1.5 border border-red-300 bg-red-50 text-red-600 hover:bg-red-100 text-[10px] uppercase font-bold rounded cursor-pointer transition-all flex items-center gap-1"><Trash2 className="w-3 h-3" /> Delete</button>
                             {ord.phone && (
                               <a
-                                href={`https://wa.me/${ord.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`*YY Leathers - Order Invoice*\nOrder ID: ${ord.id}\nStatus: ${ord.status}\nCustomer: ${ord.customer_name}\nTotal: ₹${ord.total}\n\nArtisan invoice details have been updated.`)}`}
+                                href={`https://wa.me/${ord.phone.replace(/[^0-9]/g, '').length === 10 ? '91' + ord.phone.replace(/[^0-9]/g, '') : ord.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`*YY Leathers - Order Invoice*\nOrder ID: ${ord.id}\nStatus: ${ord.status}\nCustomer: ${ord.customer_name}\nTotal: ₹${ord.total}\n\nArtisan invoice details have been updated.`)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-2 py-1.5 border border-green-400 bg-green-50 text-green-700 hover:bg-green-100 text-[10px] uppercase font-bold rounded cursor-pointer transition-all flex items-center gap-1.5"

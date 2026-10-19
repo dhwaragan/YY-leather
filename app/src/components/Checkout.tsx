@@ -13,13 +13,32 @@ const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID || '';
 
 type AppliedOffer = 'none' | 'student' | 'birthday' | 'buyback' | 'both';
 
+// Helper to ensure customer enters exactly 10-digit Indian mobile number
+const sanitizeIndianMobile = (val: string): string => {
+  if (!val) return '';
+  let digits = val.replace(/\D/g, '');
+  // If user pasted/autofilled with +91 or 91 (e.g., 919840012345)
+  if (digits.startsWith('91') && digits.length > 10) {
+    digits = digits.slice(2);
+  } else if (digits.startsWith('0') && digits.length > 10) {
+    digits = digits.slice(1);
+  }
+  return digits.slice(0, 10);
+};
+
 export const Checkout: React.FC = () => {
   const { cart, user, navigateTo, clearCart, sitewideDiscount, festivalCombineWithOffers, festivalName, isFestivalActive, refreshAllData, decrementStock } = useApp();
   
   const [address, setAddress] = useState(user?.address || '');
-  const [phoneNumber, setPhoneNumber] = useState(user?.phone || '');
+  const [phoneNumber, setPhoneNumber] = useState(() => sanitizeIndianMobile(user?.phone || ''));
   const [selectedState, setSelectedState] = useState('Tamil Nadu');
   const [editableName, setEditableName] = useState(user?.name || '');
+  
+  useEffect(() => {
+    if (user?.phone && !phoneNumber) {
+      setPhoneNumber(sanitizeIndianMobile(user.phone));
+    }
+  }, [user?.phone]);
   
   useEffect(() => {
     if (!user) {
@@ -314,6 +333,17 @@ export const Checkout: React.FC = () => {
       return;
     }
 
+    const cleanedPhone = sanitizeIndianMobile(phoneNumber);
+    if (!cleanedPhone || cleanedPhone.length !== 10) {
+      alert('Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+
+    if (!/^[6-9]\d{9}$/.test(cleanedPhone)) {
+      alert('Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.');
+      return;
+    }
+
     if (requiresManualQuote) {
       setCheckoutError('Please contact us for shipping rates for this region. Automatic checkout is disabled for this delivery area.');
       return;
@@ -338,9 +368,10 @@ export const Checkout: React.FC = () => {
     }
 
     try {
+      const formattedPhone = `+91 ${cleanedPhone}`;
       const body = {
         address,
-        phone: phoneNumber,
+        phone: formattedPhone,
         customer_email: user.email,
         customer_name: editableName || user.name, // Use editable name if changed
         user_id: user.id,
@@ -595,8 +626,50 @@ export const Checkout: React.FC = () => {
                 </div>
 
                 <div className="space-y-1 text-xs">
-                  <label className="font-bold text-neutral-600 uppercase tracking-wide">Mobile Number *</label>
-                  <input type="tel" required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} placeholder="Provide Chennai or national mobile coord (e.g., +91 98400 12345)" className="w-full p-3 border border-neutral-200 rounded-lg focus:outline-none focus:border-gold text-xs" />
+                  <div className="flex items-center justify-between">
+                    <label className="font-bold text-neutral-600 uppercase tracking-wide">Mobile Number *</label>
+                    <span className={`text-[10px] font-mono ${phoneNumber.length === 10 ? 'text-emerald-600 font-bold' : 'text-neutral-400'}`}>
+                      {phoneNumber.length}/10 digits
+                    </span>
+                  </div>
+                  <div className="flex rounded-lg border border-neutral-200 overflow-hidden focus-within:border-gold focus-within:ring-1 focus-within:ring-gold bg-white transition-all">
+                    <div className="flex items-center px-3 bg-neutral-100 border-r border-neutral-200 text-neutral-700 font-semibold text-xs select-none space-x-1 flex-shrink-0">
+                      <span>🇮🇳</span>
+                      <span>+91</span>
+                    </div>
+                    <input 
+                      type="tel" 
+                      inputMode="numeric"
+                      pattern="[6-9][0-9]{9}"
+                      maxLength={10}
+                      required 
+                      value={phoneNumber} 
+                      onChange={(e) => setPhoneNumber(sanitizeIndianMobile(e.target.value))} 
+                      placeholder="Enter 10-digit mobile number" 
+                      className="w-full p-3 text-xs tracking-wider font-mono font-medium focus:outline-none bg-transparent text-neutral-800" 
+                    />
+                  </div>
+                  {/* Real-time status / validation indicator */}
+                  {phoneNumber.length === 0 && (
+                    <p className="text-[10px] text-neutral-400">
+                      Enter your 10-digit Indian mobile number (without +91 or 0)
+                    </p>
+                  )}
+                  {phoneNumber.length > 0 && phoneNumber.length < 10 && (
+                    <p className="text-[10px] text-amber-600 flex items-center justify-between">
+                      <span>Enter {10 - phoneNumber.length} more digit{10 - phoneNumber.length > 1 ? 's' : ''}</span>
+                    </p>
+                  )}
+                  {phoneNumber.length === 10 && !/^[6-9]/.test(phoneNumber) && (
+                    <p className="text-[10px] text-red-500">
+                      Indian mobile numbers typically start with 6, 7, 8, or 9
+                    </p>
+                  )}
+                  {phoneNumber.length === 10 && /^[6-9]/.test(phoneNumber) && (
+                    <p className="text-[10px] text-emerald-600 flex items-center gap-1 font-medium">
+                      <span>✓ Valid 10-digit Indian mobile number</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1 text-xs">
@@ -728,7 +801,7 @@ export const Checkout: React.FC = () => {
 
               {isPaymentReady && razorpayOrderId ? (
                 <div className="border-t border-neutral-100 bg-neutral-50 p-6">
-                  <RazorpayPaymentForm amount={orderTotal} orderId={razorpayOrderId} razorpayKeyId={razorpayKeyId} customerName={editableName || user?.name || 'Customer'} customerEmail={user?.email || ''} customerPhone={phoneNumber} notes={{ user_id: user?.id || '', address, customer_name: editableName || user?.name || '', delivery_region: selectedState, delivery_charge: String(deliveryCharge), estimated_weight_kg: String(estimatedWeightKg), items: JSON.stringify(cart), phone: phoneNumber, applied_offer: appliedOffer }} onSuccess={handlePaymentSuccess} onError={handlePaymentError} onCancel={handlePaymentCancel} />
+                  <RazorpayPaymentForm amount={orderTotal} orderId={razorpayOrderId} razorpayKeyId={razorpayKeyId} customerName={editableName || user?.name || 'Customer'} customerEmail={user?.email || ''} customerPhone={phoneNumber} notes={{ user_id: user?.id || '', address, customer_name: editableName || user?.name || '', delivery_region: selectedState, delivery_charge: String(deliveryCharge), estimated_weight_kg: String(estimatedWeightKg), items: JSON.stringify(cart), phone: `+91 ${phoneNumber}`, applied_offer: appliedOffer }} onSuccess={handlePaymentSuccess} onError={handlePaymentError} onCancel={handlePaymentCancel} />
                 </div>
               ) : (
                 <div className="bg-neutral-50 px-6 py-4 border-t border-neutral-100 flex items-center justify-between">

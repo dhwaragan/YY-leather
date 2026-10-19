@@ -65,8 +65,8 @@ export const CONTENT_BLOCKS_KEY = 'content_blocks';
 export const CATEGORIES_KEY = 'categories';
 export const HERO_SLIDES_KEY = 'hero_slides';
 
-// Long TTL for public storefront data (60 min - reduced egress for returning visitors)
-export const PUBLIC_TTL = 60 * 60 * 1000;
+// Storefront cache TTL (5 min) — keeps Supabase bandwidth usage strictly limited
+export const PUBLIC_TTL = 5 * 60 * 1000;
 
 // Festival settings - cache for 24 hours (STEP 16)
 export const FESTIVAL_TTL = 24 * 60 * 60 * 1000;

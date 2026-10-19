@@ -17,6 +17,8 @@ export function optimizeImage(url: string | undefined, width: number = 600): str
   
   // Cloudinary images - add format conversion
   if (url.includes('cloudinary.com')) {
+    // If already contains optimization parameters, don't stack duplicates
+    if (url.includes('/upload/f_auto')) return url;
     // Insert f_auto,q_60,w_{width} params into Cloudinary URL
     const parts = url.split('/upload/');
     if (parts.length === 2) {

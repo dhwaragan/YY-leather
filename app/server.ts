@@ -1114,6 +1114,17 @@ app.post('/api/auth/profile', (req, res) => {
 
 
 
+// ---------------- PUBLIC STOREFRONT DATA (ZERO SUPABASE EGRESS) ----------------
+app.get('/api/storefront-data', (req, res) => {
+  res.json({
+    products: db.products || [],
+    offers: db.offers || [],
+    content_blocks: db.content_blocks || [],
+    hero_slides: (db as any).hero_slides || [],
+    custom_categories: (db as any).custom_categories || [],
+  });
+});
+
 // ---------------- PRODUCTS ----------------
 app.get('/api/products', (req, res) => {
   res.json(db.products);

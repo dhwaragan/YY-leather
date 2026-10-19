@@ -15,10 +15,19 @@ export const PreorderPage: React.FC = () => {
   const [orderRefId, setOrderRefId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Helper to ensure 10-digit Indian mobile number
+  const sanitizeIndianMobile = (val: string): string => {
+    if (!val) return '';
+    let digits = val.replace(/\D/g, '');
+    if (digits.startsWith('91') && digits.length > 10) digits = digits.slice(2);
+    else if (digits.startsWith('0') && digits.length > 10) digits = digits.slice(1);
+    return digits.slice(0, 10);
+  };
+
   // Sizing Preference Form States
   const [styleDesc, setStyleDesc] = useState('');
   const [size, setSize] = useState('9');
-  const [phone, setPhone] = useState(user?.phone || '');
+  const [phone, setPhone] = useState(() => sanitizeIndianMobile(user?.phone || ''));
   const [date, setDate] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -30,12 +39,18 @@ export const PreorderPage: React.FC = () => {
       return;
     }
 
+    const cleanedPhone = sanitizeIndianMobile(phone);
+    if (!cleanedPhone || cleanedPhone.length !== 10) {
+      alert('Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+
     setIsSubmitting(true);
     
     const payload = {
       name: user.name,
       email: user.email,
-      phone,
+      phone: `+91 ${cleanedPhone}`,
       style_desc: styleDesc,
       image_urls: [],
       size,
@@ -187,16 +202,27 @@ export const PreorderPage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="text-xs font-sans font-semibold text-neutral-700 block">
-                        Customer Phone Number *
+                        Customer Mobile Number (10 digits) *
                       </label>
-                      <input
-                        type="tel"
-                        required
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="e.g., +91 98400 12345"
-                        className="w-full text-xs p-3 border border-neutral-200 rounded text-neutral-800 focus:outline-none focus:border-gold font-sans"
-                      />
+                      <div className="relative flex rounded border border-neutral-200 overflow-hidden focus-within:border-gold focus-within:ring-1 focus-within:ring-gold/20 bg-white">
+                        <span className="inline-flex items-center px-3 bg-neutral-100 text-neutral-700 text-xs font-semibold border-r border-neutral-200 select-none">
+                          🇮🇳 +91
+                        </span>
+                        <input
+                          type="tel"
+                          inputMode="numeric"
+                          pattern="[0-9]{10}"
+                          maxLength={10}
+                          required
+                          value={phone}
+                          onChange={(e) => setPhone(sanitizeIndianMobile(e.target.value))}
+                          placeholder="9876543210"
+                          className="w-full text-xs p-3 text-neutral-800 focus:outline-none font-mono tracking-wider font-semibold"
+                        />
+                      </div>
+                      <p className="text-[10px] text-neutral-400 font-sans">
+                        Enter 10-digit mobile number ({phone.length}/10)
+                      </p>
                     </div>
 
                     <div className="space-y-1">

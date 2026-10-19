@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Upload, X, Loader2, Plus } from 'lucide-react';
+import { Upload, X, Loader2, Plus, Star } from 'lucide-react';
 import { supabase as supabaseClient } from '../supabase';
 
 interface MultiImageUploaderProps {
@@ -62,21 +62,85 @@ export const MultiImageUploader: React.FC<MultiImageUploaderProps> = ({
     onChange(newArr);
   };
 
+  const setAsMain = (index: number) => {
+    if (index <= 0 || index >= value.length) return;
+    const newArr = [...value];
+    const [selected] = newArr.splice(index, 1);
+    newArr.unshift(selected); // Move to index 0 so it comes first in store browsing
+    onChange(newArr);
+  };
+
   return (
     <div className="mb-4">
-      {label && <label className="block font-semibold mb-1 text-neutral-700">{label}</label>}
+      {label && (
+        <div className="flex items-center justify-between mb-1">
+          <label className="block font-semibold text-neutral-700">{label}</label>
+          {value.length > 0 && (
+            <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded font-medium flex items-center gap-1">
+              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+              1st photo = Main cover
+            </span>
+          )}
+        </div>
+      )}
+      <p className="text-[11px] text-neutral-400 mb-2">
+        The image marked with <span className="font-bold text-amber-600">★ Main</span> appears first when customers browse the store. Click &quot;Set as Main&quot; on any picture to make it the primary cover.
+      </p>
       <div className="flex flex-wrap gap-3">
-        {value.map((url, i) => (
-           <div key={i} className="relative w-24 h-24 border rounded overflow-hidden shadow-sm group">
-             <img src={url} alt="upload preview" className="w-full h-full object-cover" />
-             <div className="absolute top-1 left-1 px-1 py-0.5 bg-black/60 text-white text-[9px] rounded font-bold uppercase tracking-wider backdrop-blur-sm pointer-events-none z-10">
-               {url.includes('supabase.co') ? 'Direct' : 'URL'}
-             </div>
-             <button type="button" onClick={() => removeImage(i)} className="absolute top-1 right-1 bg-white/80 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
-                <X className="w-3 h-3 text-red-500" />
-             </button>
-           </div>
-        ))}
+        {value.map((url, i) => {
+          const isMain = i === 0;
+          return (
+            <div 
+              key={i} 
+              className={`relative w-24 h-24 rounded-lg overflow-hidden shadow-sm group transition-all ${
+                isMain 
+                  ? 'border-2 border-amber-500 ring-2 ring-amber-400/30' 
+                  : 'border border-neutral-200 hover:border-neutral-400'
+              }`}
+            >
+              <img src={url} alt="upload preview" className="w-full h-full object-cover" />
+              
+              {/* Main Badge / URL Badge */}
+              <div className="absolute top-1 left-1 flex items-center gap-1 z-10">
+                {isMain ? (
+                  <span className="px-1.5 py-0.5 bg-amber-500 text-neutral-950 text-[9px] rounded font-black uppercase tracking-wider shadow flex items-center gap-0.5">
+                    <Star className="w-2.5 h-2.5 fill-current" /> MAIN
+                  </span>
+                ) : (
+                  <span className="px-1 py-0.5 bg-black/60 text-white text-[9px] rounded font-bold uppercase tracking-wider backdrop-blur-sm pointer-events-none">
+                    {url.includes('supabase.co') ? 'Direct' : 'URL'}
+                  </span>
+                )}
+              </div>
+
+              {/* Remove button */}
+              <button 
+                type="button" 
+                onClick={() => removeImage(i)} 
+                title="Delete this image"
+                className="absolute top-1 right-1 bg-white/90 hover:bg-red-500 hover:text-white text-red-500 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-20 shadow-sm"
+              >
+                <X className="w-3 h-3" />
+              </button>
+
+              {/* Main Indicator or Set as Main Button */}
+              {isMain ? (
+                <div className="absolute bottom-0 inset-x-0 bg-amber-500 text-neutral-950 text-[9px] font-bold py-0.5 text-center flex items-center justify-center gap-1 shadow-sm uppercase tracking-wider z-10">
+                  <Star className="w-2.5 h-2.5 fill-current" /> Cover Photo
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setAsMain(i)}
+                  title="Make this the main picture (first in store)"
+                  className="absolute bottom-0 inset-x-0 bg-black/80 hover:bg-amber-500 hover:text-neutral-950 text-white text-[9px] font-semibold py-1 text-center transition-colors cursor-pointer z-10 flex items-center justify-center gap-1"
+                >
+                  <Star className="w-2.5 h-2.5 text-amber-300" /> Set as Main
+                </button>
+              )}
+            </div>
+          );
+        })}
         <div 
           onClick={() => !uploading && inputRef.current?.click()}
           className={`w-24 h-24 border-2 border-dashed rounded flex flex-col items-center justify-center p-2 text-center transition-colors ${uploading ? 'bg-neutral-100 cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-neutral-50 hover:border-gold border-neutral-300'}`}

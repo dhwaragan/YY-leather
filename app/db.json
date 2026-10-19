@@ -43,44 +43,15 @@
   ],
   "products": [
     {
-      "id": "prod-1792334813355",
-      "name": "test",
-      "description": "testing only ",
-      "price": 0.01,
-      "mrp": 10,
-      "weight_kg": 0.1,
-      "sizePrices": {
-        "5": 0.01
-      },
-      "sizeMRPs": {
-        "5": 10
-      },
-      "sizeWeights": {
-        "5": 0.1
-      },
-      "sizeQuantities": {
-        "5": 10
-      },
-      "category": "CHELSEA",
-      "images": [
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=600&auto=format&fit=crop"
-      ],
-      "is_new_arrival": false,
-      "is_best_seller": false,
-      "is_published": true,
-      "created_at": "2026-10-18T14:46:53.355Z"
-    },
-    {
       "id": "prod-1792009511275",
       "mrp": 2499,
       "name": "Old Money Loafer - Espresso Brown Croc SL",
       "price": 1599,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/0r2jicygxgy-1792009482197.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/ugni8tu1xkl-1792009483085.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/hzjnh4oryx-1792009483468.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/gys2zy7zefj-1792009483886.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/bvi3py0b8tl-1792009489937.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394095/hzjnh4oryx-1792009483468.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394087/0gxgo86spxt-1790883792284.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394095/gys2zy7zefj-1792009483886.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394093/bvi3py0b8tl-1792009489937.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -108,6 +79,7 @@
         "10": 2
       },
       "is_published": true,
+      "customer_email": "",
       "is_best_seller": false,
       "is_new_arrival": true,
       "sizeQuantities": {
@@ -124,11 +96,10 @@
       "name": "Old Money Loafer - Espresso Brown SL",
       "price": 1599,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/27elqvpzolk-1792008776201.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/u8omtqslght-1792008777030.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/6000e34u8u-1792008777379.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/6oahmhk0ejq-1792008777674.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/uo44vnx7mg-1792008778073.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394088/0uta0ejngp1-1790886546325.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394103/u8omtqslght-1792008777030.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394105/uo44vnx7mg-1792008778073.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394088/27elqvpzolk-1792008776201.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -156,6 +127,7 @@
         "10": 2
       },
       "is_published": true,
+      "customer_email": "",
       "is_best_seller": false,
       "is_new_arrival": true,
       "sizeQuantities": {
@@ -172,12 +144,10 @@
       "name": "Old Money Loafer - Shimmering Black Croc SL",
       "price": 1599,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/446h9jnlusy-1792008069341.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/73ei8e5qaww-1792008070091.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/hiavgcdl9su-1792008070576.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/t2gpu3lhsp-1792008071020.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/ufp2qjht8di-1792008071502.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/uea1cpi8hmm-1792008071849.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394104/ufp2qjht8di-1792008071502.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394103/t2gpu3lhsp-1792008071020.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394103/uea1cpi8hmm-1792008071849.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394103/t2gpu3lhsp-1792008071020.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -205,6 +175,7 @@
         "10": 2
       },
       "is_published": true,
+      "customer_email": "",
       "is_best_seller": false,
       "is_new_arrival": true,
       "sizeQuantities": {
@@ -221,11 +192,10 @@
       "name": "Old Money Loafer - Shimmering Black SL",
       "price": 1599,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/kdnjxcp0j8b-1792006453606.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/r1tjjsyp1on-1792006460953.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/2epyc0a3868-1792006461346.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/usw9e8zv74j-1792006461789.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/n72r0mztyrg-1792006462123.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394101/r1tjjsyp1on-1792006460953.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394093/bvi3py0b8tl-1792009489937.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394089/2epyc0a3868-1792006461346.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394097/kdnjxcp0j8b-1792006453606.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -253,6 +223,7 @@
         "10": 2
       },
       "is_published": true,
+      "customer_email": "",
       "is_best_seller": false,
       "is_new_arrival": true,
       "sizeQuantities": {
@@ -269,11 +240,11 @@
       "name": "Suede Olive Sneakers",
       "price": 1899,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/dvz4oi7n3q6-1791925474753.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/pp5s2c4jef-1791925481479.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/mg3hzo8fvgb-1791925481974.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/06s1eod3nuwm-1791925482450.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/j0ev3jakql-1791925482820.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394101/pp5s2c4jef-1791925481479.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394098/mg3hzo8fvgb-1791925481974.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394095/j0ev3jakql-1791925482820.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394093/dvz4oi7n3q6-1791925474753.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394087/06s1eod3nuwm-1791925482450.jpg"
       ],
       "category": "SNEAKERS",
       "sizeMRPs": {
@@ -322,11 +293,11 @@
       "name": "Suede Ash Grey Sneaker",
       "price": 1899,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/lwrobl1xww-1791925127305.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/zdhu86xdgj-1791925136388.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/nhpd2hc23g-1791925136783.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/afcs1xlnwh-1791925142941.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/3ope0opktq7-1791925143289.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394099/nhpd2hc23g-1791925136783.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394089/3ope0opktq7-1791925143289.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394092/afcs1xlnwh-1791925142941.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394100/lwrobl1xww-1791925127305.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1792394106/zdhu86xdgj-1791925136388.jpg"
       ],
       "category": "SNEAKERS",
       "sizeMRPs": {
@@ -375,11 +346,11 @@
       "name": "Suede Turquoise Green Sneaker ",
       "price": 1899,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/orugeqky3xb-1791924796359.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/nn310627kja-1791924806045.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/css5hac4kar-1791924806678.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/gb5f5p5gkk6-1791924807109.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/jki8tzfnmkj-1791924807524.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394093/css5hac4kar-1791924806678.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394094/gb5f5p5gkk6-1791924807109.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394096/jki8tzfnmkj-1791924807524.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394099/nn310627kja-1791924806045.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394101/orugeqky3xb-1791924796359.jpg"
       ],
       "category": "SNEAKERS",
       "sizeMRPs": {
@@ -428,11 +399,11 @@
       "name": "Suede Tan Sneakers",
       "price": 1899,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/9vk9vglr47i-1791924308858.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/jclpjz3bff-1791924316260.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/kncu62nlal9-1791924316659.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/l6qp3u1ehak-1791924317177.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/c5dfluftpwl-1791924317643.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394092/9vk9vglr47i-1791924308858.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394093/c5dfluftpwl-1791924317643.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394096/jclpjz3bff-1791924316260.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394097/kncu62nlal9-1791924316659.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394098/l6qp3u1ehak-1791924317177.jpg"
       ],
       "category": "SNEAKERS",
       "sizeMRPs": {
@@ -481,11 +452,11 @@
       "name": "Suede Sneakers Brownie",
       "price": 1899,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/ykky24rbni-1791923876763.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/a1ntbs3fruf-1791923914402.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/eyku9mjsr4-1791923923548.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/rt1osy4rife-1791923924091.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/adusz9kvd8e-1791923924599.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394092/adusz9kvd8e-1791923924599.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394092/a1ntbs3fruf-1791923914402.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394094/eyku9mjsr4-1791923923548.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394102/rt1osy4rife-1791923924091.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394106/ykky24rbni-1791923876763.jpg"
       ],
       "category": "SNEAKERS",
       "sizeMRPs": {
@@ -534,11 +505,11 @@
       "name": "YY Suede Sneakers - Black",
       "price": 1899,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/7bkjuhnfaut-1791923278464.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/7y72xni9dzi-1791923284798.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/5l2r7k1943j-1791923291270.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/ue93axhhmis-1791923291606.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/8i63xbhuf4g-1791923291921.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394104/ue93axhhmis-1791923291606.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394091/8i63xbhuf4g-1791923291921.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394089/7bkjuhnfaut-1791923278464.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394089/7y72xni9dzi-1791923284798.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394087/5l2r7k1943j-1791923291270.jpg"
       ],
       "category": "SNEAKERS",
       "sizeMRPs": {
@@ -587,11 +558,11 @@
       "name": "Dark Brown - Italian Toe Loafer",
       "price": 1499,
       "images": [
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/t3ptnip7rzd-1790886532540.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/kkdyn2ducuo-1790886545591.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/mxgnkjztp5h-1790886546010.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/0uta0ejngp1-1790886546325.jpg",
-        "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/products/8ai5uvjdsfs-1790886546669.jpg"
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394097/itewi2ivpg-1790886150778.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394088/0uta0ejngp1-1790886546325.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394097/je6jmcsxn5d-1790886164747.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394099/mxgnkjztp5h-1790886546010.jpg",
+        "https://res.cloudinary.com/fvrzzvu0/image/upload/f_auto,q_60,w_800/v1792394087/0bknp0sju8wt-1790886163444.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -2123,11 +2094,11 @@
       "sizeQuantities": {
         "5": 0,
         "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0
+        "7": 5,
+        "8": 5,
+        "9": 5,
+        "10": 5,
+        "11": 5
       }
     },
     {
@@ -2136,11 +2107,11 @@
       "name": "Old Money Loafer - Chocolate Espresso Brown CL",
       "price": 1899,
       "images": [
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x1.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x2.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717177/x3.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x4.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717177/x5.jpg"
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x1.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x2.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717177/x3.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717178/x4.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717177/x5.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -2176,11 +2147,11 @@
       "is_new_arrival": false,
       "sizeQuantities": {
         "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 0
+        "7": 5,
+        "8": 5,
+        "9": 5,
+        "10": 5,
+        "11": 5
       }
     },
     {
@@ -2189,11 +2160,11 @@
       "name": "Old Money Loafer - Shimmering Black CL",
       "price": 1899,
       "images": [
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx1.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx2.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx3.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717294/xxx4.jpg",
-        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx5.jpg"
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx1.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx2.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx3.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717294/xxx4.jpg",
+        "https://res.cloudinary.com/sqveyy5b/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786717293/xxx5.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -2233,8 +2204,8 @@
       "sizeQuantities": {
         "5": 0,
         "6": 0,
-        "7": 0,
-        "8": 0,
+        "7": 5,
+        "8": 5,
         "9": 10,
         "10": 10,
         "11": 10
@@ -3956,11 +3927,11 @@
       "name": "YY's Panda - Old Money Black & White",
       "price": 1899,
       "images": [
-        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722938/h1_gi8sonckddt-1786393208808.jpg",
-        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722946/h2_9plg5qrfusv-1786393222093.jpg",
-        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722939/h3_45kium1nwps-1786393222447.jpg",
-        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722942/h4_cr8uepyzsdr-1786393222774.jpg",
-        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722940/h5_5cxb82zq5sb-1786393223093.jpg"
+        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722938/h1_gi8sonckddt-1786393208808.jpg",
+        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722946/h2_9plg5qrfusv-1786393222093.jpg",
+        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722939/h3_45kium1nwps-1786393222447.jpg",
+        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722942/h4_cr8uepyzsdr-1786393222774.jpg",
+        "https://res.cloudinary.com/vcsi043q/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786722940/h5_5cxb82zq5sb-1786393223093.jpg"
       ],
       "category": "PENNY - LOAFERS",
       "sizeMRPs": {
@@ -4000,11 +3971,11 @@
       "sizeQuantities": {
         "5": 0,
         "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "11": 3
+        "7": 5,
+        "8": 5,
+        "9": 5,
+        "10": 5,
+        "11": 5
       }
     },
     {
@@ -4710,162 +4681,6 @@
     }
   ],
   "orders": [
-    {
-      "id": "YY-ORD-87085",
-      "items": [
-        {
-          "product": {
-            "id": "prod-1783966657891",
-            "mrp": 2999,
-            "name": "Black - Wide Toe Chelsea",
-            "price": 1799,
-            "images": [
-              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639040/1th8r11ovfm-1783966645947_mn5kvk.jpg",
-              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639379/x9weaosvn1d-1783966648167_ucawvl.jpg",
-              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639379/dd06f2a3w1v-1783966647099_kooqaj.jpg",
-              "https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_800/f_auto,q_60,w_800/v1786639379/mxa9czeynni-1783966647675_kqzlzm.jpg"
-            ],
-            "category": "CHELSEA BOOT",
-            "sizeMRPs": {
-              "8": 2999
-            },
-            "weight_kg": 2,
-            "created_at": "2026-07-13T18:17:37.891Z",
-            "sizePrices": {
-              "8": 1799
-            },
-            "description": "Italian Chelsea Crust Leather Boot – Black Patina\n\nCrafted from premium Italian crust leather, this Chelsea Boot combines timeless craftsmanship with modern elegance. The naturally finished crust leather develops a rich patina over time, making every pair uniquely yours. Featuring a clean, streamlined silhouette with a refined round toe, it delivers effortless sophistication for both formal and smart-casual occasions.\n\nThe elastic side panels and pull tabs ensure easy slip-on convenience, while the soft leather lining and cushioned footbed provide exceptional comfort throughout the day. Finished with a durable anti-slip outsole, this boot is designed to offer lasting performance without compromising on style.\n\nKey Features\nPremium Italian crust leather upper\nRich hand-finished surface that develops a unique patina\nClassic Chelsea boot with stretch elastic side panels\nSoft genuine leather lining for breathability\nCushioned leather footbed for all-day comfort\nDurable anti-slip outsole for reliable traction\nRear pull tabs for easy wear\nRefined round-toe silhouette for versatile styling\nPerfect for business, formal, and smart-casual wear",
-            "sizeWeights": {
-              "8": 2
-            },
-            "is_published": true,
-            "customer_email": "",
-            "is_best_seller": true,
-            "is_new_arrival": false,
-            "sizeQuantities": {
-              "8": 10
-            }
-          },
-          "quantity": 1,
-          "selectedSize": "9"
-        },
-        {
-          "product": {
-            "id": "prod-1792334813355",
-            "mrp": 10,
-            "name": "test",
-            "price": 0.01,
-            "images": [
-              "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=600&auto=format&fit=crop"
-            ],
-            "category": "CHELSEA",
-            "sizeMRPs": {
-              "5": 10
-            },
-            "weight_kg": 0.1,
-            "created_at": "2026-10-18T14:46:53.355Z",
-            "sizePrices": {
-              "5": 0.01
-            },
-            "description": "testing only ",
-            "sizeWeights": {
-              "5": 0.1
-            },
-            "is_published": true,
-            "customer_email": "",
-            "is_best_seller": false,
-            "is_new_arrival": false,
-            "sizeQuantities": {
-              "5": 10
-            }
-          },
-          "quantity": 1,
-          "selectedSize": "9"
-        }
-      ],
-      "phone": "3434",
-      "total": 2084.01,
-      "status": "Ordered",
-      "address": "sd",
-      "user_id": "5b34eeb0-56f3-40cb-942e-6c62f40933c7",
-      "created_at": "2026-10-18T16:28:16.543Z",
-      "applied_offer": "none",
-      "customer_name": "Dhwaragan Dhwaragan",
-      "customer_email": "dhwaragandhwaragan9@gmail.com",
-      "buyback_details": null,
-      "delivery_charge": 168,
-      "delivery_region": "Tamil Nadu",
-      "buyback_requested": false,
-      "razorpay_order_id": "order_rp_1792340896543",
-      "estimated_weight_kg": 2.1,
-      "razorpay_payment_id": "pay_rp_1792340896543",
-      "birthday_benefit_details": null,
-      "student_discount_details": null,
-      "birthday_benefit_requested": false,
-      "student_discount_requested": false
-    },
-    {
-      "id": "YY-ORD-91610",
-      "items": [
-        {
-          "product": {
-            "id": "prod-1792334813355",
-            "mrp": 10,
-            "name": "test",
-            "price": 0.01,
-            "images": [
-              "https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=600&auto=format&fit=crop"
-            ],
-            "category": "CHELSEA",
-            "sizeMRPs": {
-              "5": 10
-            },
-            "weight_kg": 0.1,
-            "created_at": "2026-10-18T14:46:53.355Z",
-            "sizePrices": {
-              "5": 0.01
-            },
-            "description": "testing only ",
-            "sizeWeights": {
-              "5": 0.1
-            },
-            "is_published": true,
-            "customer_email": "",
-            "is_best_seller": false,
-            "is_new_arrival": false,
-            "sizeQuantities": {
-              "5": 10
-            }
-          },
-          "quantity": 1,
-          "selectedSize": "9"
-        }
-      ],
-      "phone": "343434",
-      "total": 8.009,
-      "status": "Confirmed",
-      "address": "dsfdfs",
-      "user_id": "6d0d57d2-be5f-4ebf-9222-617b371e302e",
-      "created_at": "2026-10-18T14:50:52.691Z",
-      "admin_email": "dhwaragandhwaragan9@gmail.com",
-      "applied_offer": "buyback",
-      "customer_name": "dhwaragan",
-      "admin_password": "YYLeathers@SecureAdmin2026!",
-      "customer_email": "dhwaraganconstruction@gmail.com",
-      "buyback_details": {
-        "status": "Pending"
-      },
-      "delivery_charge": 8,
-      "delivery_region": "Tamil Nadu",
-      "buyback_requested": true,
-      "razorpay_order_id": "order_TpPTysZ0hjX7hT",
-      "estimated_weight_kg": 0.1,
-      "razorpay_payment_id": "pay_TpPUilQsdPEevz",
-      "birthday_benefit_details": null,
-      "student_discount_details": null,
-      "birthday_benefit_requested": false,
-      "student_discount_requested": false
-    },
     {
       "id": "YY-ORD-86743",
       "items": [
@@ -10319,12 +10134,12 @@
   ],
   "offers": [
     {
-      "id": "off-1790892853800",
+      "id": "off-1792396344691",
       "title": "Diwali Surprise..!",
       "is_active": true,
-      "banner_url": "https://xslhdwoiqbpnzzhjxzod.supabase.co/storage/v1/object/public/yy-images/banners/1790892834171-6v6m4p6u7nm.png",
-      "description": "Starting from 9th October.",
-      "valid_until": "2026-10-11",
+      "banner_url": "https://res.cloudinary.com/crda2rxa/image/upload/v1792396275/1790892834171-6v6m4p6u7nm.png",
+      "description": "Starting From 9th October",
+      "valid_until": "2026-11-10",
       "discount_percent": 0
     }
   ],

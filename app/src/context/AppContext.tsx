@@ -253,10 +253,29 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
+    // KEY OPTIMIZATION: Try server in-memory endpoint FIRST (ZERO Supabase egress!)
     try {
-      // KEY OPTIMIZATION: Fetch ONLY public keys - NEVER download orders/preorders/buybacks
-      // This eliminates the 1.26MB orders array download for every visitor
-      // We filter admin-only keys OUT using `.in()` to avoid pulling them at all
+      const apiRes = await fetch('/api/storefront-data');
+      if (apiRes.ok) {
+        const apiData = await apiRes.json();
+        if (apiData && Array.isArray(apiData.products) && apiData.products.length > 0) {
+          const result = {
+            products: apiData.products,
+            offers: (apiData.offers || []) as Offer[],
+            contentBlocks: (apiData.content_blocks || []) as ContentBlock[],
+            heroSlides: (apiData.hero_slides || []) as any[],
+            customCategories: (apiData.custom_categories && apiData.custom_categories.length > 0) 
+              ? apiData.custom_categories 
+              : DEFAULT_CATEGORIES,
+          };
+          setCache(PUBLIC_DATA_KEY, result, PUBLIC_TTL);
+          return result;
+        }
+      }
+    } catch {}
+
+    try {
+      // Fallback: Query Supabase only if server API is unavailable
       const { data: syncData, error } = await supabase
         .from('yy_store_sync')
         .select('key, value')
@@ -267,9 +286,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
           const row = syncData.find((r: any) => r.key === key);
           return row ? row.value : [];
         };
+        let prods = (getVal('products') || []) as any[];
+        if (!prods || prods.length === 0) {
+          try {
+            const apiRes = await fetch('/api/products');
+            if (apiRes.ok) prods = await apiRes.json();
+          } catch {}
+        }
         
         const result = {
-          products: (getVal('products') || []) as any[],
+          products: prods,
           offers: (getVal('offers') || []) as Offer[],
           contentBlocks: (getVal('content_blocks') || []) as ContentBlock[],
           heroSlides: (getVal('hero_slides') || []) as any[],
@@ -283,11 +309,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         return result;
       }
       
-      // KEY OPTIMIZATION: Fallback to MINIMAL seed data - do NOT import full db.json
-      // The full db.json (1.4MB) was being bundled and downloaded with every page load!
-      // Supabase is the source of truth; empty arrays here are fine since Supabase fetch is retried.
+      // Fallback: Try /api/products directly if Supabase sync data was empty or errored
+      let fallbackProds: any[] = [];
+      try {
+        const apiRes = await fetch('/api/products');
+        if (apiRes.ok) fallbackProds = await apiRes.json();
+      } catch {}
+
       const result = {
-        products: [] as any[],
+        products: fallbackProds,
         offers: [] as Offer[],
         contentBlocks: [] as ContentBlock[],
         heroSlides: [] as any[],
@@ -296,9 +326,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       setCache(PUBLIC_DATA_KEY, result, PUBLIC_TTL);
       return result;
     } catch (e) {
-      console.error("Error loading data:", e);
+      console.error("Error loading data from Supabase, attempting API fallback:", e);
+      let fallbackProds: any[] = [];
+      try {
+        const apiRes = await fetch('/api/products');
+        if (apiRes.ok) fallbackProds = await apiRes.json();
+      } catch {}
+
       return {
-        products: [] as any[],
+        products: fallbackProds,
         offers: [] as Offer[],
         contentBlocks: [] as ContentBlock[],
         heroSlides: [] as any[],
@@ -487,6 +523,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         }
         setIsLoading(false);
         hasLoadedRef.current = true;
+        
+        // Stale-While-Revalidate: Silently sync freshest data in background so cover photo / price changes appear
+        fetchPublicData(true).then((freshData) => {
+          if (freshData && freshData.products && freshData.products.length > 0) {
+            setProducts(freshData.products.map(mapProduct));
+            setOffers(freshData.offers);
+            setContentBlocks(freshData.contentBlocks);
+            setHeroSlides(freshData.heroSlides);
+            setCustomCategories(freshData.customCategories);
+          }
+        }).catch(err => console.debug("Background storefront revalidate:", err));
         return;
       }
       
@@ -644,8 +691,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       } catch (e) {}
     }
 
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'yy_store_updated') {
+        fetchPublicData(true).then((freshData) => {
+          if (freshData && freshData.products && freshData.products.length > 0) {
+            setProducts(freshData.products.map(mapProduct));
+            setOffers(freshData.offers);
+            setContentBlocks(freshData.contentBlocks);
+            setHeroSlides(freshData.heroSlides);
+            setCustomCategories(freshData.customCategories);
+          }
+        });
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorage);
     };
   }, [mapProduct, mapOrder, mapPreorder, fetchPublicData, fetchOrders, fetchPreorders, isAdminEmail]);
 
@@ -1099,6 +1162,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setProducts(prev => [newProduct, ...prev]);
         // Invalidate cache so next fresh load sees the new product
         removeCache(PUBLIC_DATA_KEY);
+        try { localStorage.setItem('yy_store_updated', String(Date.now())); } catch {}
         return true;
       }
       const errText = await res.text();
@@ -1130,6 +1194,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updatedProduct } : p));
         // Invalidate cache so next fresh page load sees the update
         removeCache(PUBLIC_DATA_KEY);
+        try { localStorage.setItem('yy_store_updated', String(Date.now())); } catch {}
         return true;
       }
       const errText = await res.text();
@@ -1243,6 +1308,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         // EGRESS FIX: Optimistic local update — remove from local state immediately
         setProducts(prev => prev.filter(p => p.id !== id));
         removeCache(PUBLIC_DATA_KEY);
+        try { localStorage.setItem('yy_store_updated', String(Date.now())); } catch {}
         return true;
       }
       // Fallback: sync directly to Supabase
