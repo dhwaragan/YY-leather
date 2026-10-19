@@ -253,29 +253,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     }
 
-    // KEY OPTIMIZATION: Try server in-memory endpoint FIRST (ZERO Supabase egress!)
     try {
-      const apiRes = await fetch('/api/storefront-data');
-      if (apiRes.ok) {
-        const apiData = await apiRes.json();
-        if (apiData && Array.isArray(apiData.products) && apiData.products.length > 0) {
-          const result = {
-            products: apiData.products,
-            offers: (apiData.offers || []) as Offer[],
-            contentBlocks: (apiData.content_blocks || []) as ContentBlock[],
-            heroSlides: (apiData.hero_slides || []) as any[],
-            customCategories: (apiData.custom_categories && apiData.custom_categories.length > 0) 
-              ? apiData.custom_categories 
-              : DEFAULT_CATEGORIES,
-          };
-          setCache(PUBLIC_DATA_KEY, result, PUBLIC_TTL);
-          return result;
-        }
-      }
-    } catch {}
-
-    try {
-      // Fallback: Query Supabase only if server API is unavailable
+      // Direct Supabase sync: Fetch ONLY public keys from cloud Supabase
       const { data: syncData, error } = await supabase
         .from('yy_store_sync')
         .select('key, value')
