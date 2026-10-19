@@ -1096,6 +1096,7 @@ export const AdminPanel: React.FC = () => {
   const handleUpdateOrderStatus = async (id: string, status: Order['status']) => {
     // Call AppContext updateOrderStatus to ensure context and db are fully synchronized instantly
     await updateOrderStatus(id, status);
+    await refreshOrdersOnly(true);
   };
 
   const handleUpdateOrderBuyback = async (id: string, status: 'Confirmed' | 'Rejected') => {

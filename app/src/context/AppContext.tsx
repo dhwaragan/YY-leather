@@ -325,30 +325,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // MEMOIZED: Fetch orders - only called when admin logs in or orders change
   // MEMOIZED: Fetch orders - accepts optional userId to only fetch that user's orders (reduces egress)
-  const fetchOrders = useCallback(async (userId?: string): Promise<Order[]> => {
+  const fetchOrders = useCallback(async (userId?: string, bypassCache = false): Promise<Order[]> => {
+    const userEmail = user?.email;
     const cacheKey = userId ? `orders_${userId}` : ORDERS_KEY;
-    const cachedData = getCache<Order[]>(cacheKey, 5 * 60 * 1000); // 5 min TTL
-    if (cachedData) {
-      return cachedData;
+    if (!bypassCache) {
+      const cachedData = getCache<Order[]>(cacheKey, 30 * 1000); // 30s TTL
+      if (cachedData) {
+        return cachedData;
+      }
     }
 
     let apiData: Order[] | null = null;
     try {
       // EGRESS FIX: For non-admin users, fetch only their orders via user-specific endpoint
-      const endpoint = userId ? `/api/orders/user/${userId}` : "/api/orders";
+      let endpoint = "/api/orders";
+      if (userId) {
+        endpoint = `/api/orders/user/${userId}${userEmail ? `?customer_email=${encodeURIComponent(userEmail.toLowerCase())}` : ''}`;
+      }
       const res = await fetch(endpoint);
       if (res.ok) {
         const data = await res.json();
         const mapped = (data || []).map(mapOrder);
         // For non-admin users, always use API result (even if empty)
         if (userId) {
-          setCache(cacheKey, mapped, 5 * 60 * 1000);
+          setCache(cacheKey, mapped, 30 * 1000);
           return mapped;
         }
         // For admin (all orders): only trust API result if it has data
         // If API returns empty, fall through to Supabase (serverless may not have orders loaded)
         if (mapped.length > 0) {
-          setCache(cacheKey, mapped, 5 * 60 * 1000);
+          setCache(cacheKey, mapped, 30 * 1000);
           return mapped;
         }
         apiData = mapped; // remember it was empty
@@ -369,7 +375,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         
         if (!error && data?.value && Array.isArray(data.value) && data.value.length > 0) {
           const mapped = (data.value || []).map(mapOrder);
-          setCache(ORDERS_KEY, mapped, 5 * 60 * 1000);
+          setCache(ORDERS_KEY, mapped, 30 * 1000);
           return mapped;
         }
       } catch (e) {
@@ -379,10 +385,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     
     // If both API and Supabase returned empty, cache the empty result to avoid hammering
     if (!userId && apiData !== null) {
-      setCache(cacheKey, [], 60 * 1000); // only cache empty for 1 min (not 5)
+      setCache(cacheKey, [], 15 * 1000); // only cache empty for 15s
     }
     return [];
-  }, [mapOrder]);
+  }, [user?.email, mapOrder]);
 
 
   // MEMOIZED: Fetch preorders - only called when admin logs in or preorders change
@@ -491,12 +497,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
           try {
             const su = JSON.parse(savedU);
             if (isAdminEmail(su.email)) {
-              setOrders(cached.orders || []);
-              setPreorders(cached.preorders || []);
+              fetchOrders(undefined, true).then(allOrders => {
+                if (allOrders) setOrders(allOrders);
+              });
+              fetchPreorders(true).then(allPreorders => {
+                if (allPreorders) setPreorders(allPreorders);
+              });
             } else {
               // EGRESS FIX: Fetch only this user's orders, not all orders
-              fetchOrders(su.id).then(userOrders => {
-                setOrders(userOrders);
+              fetchOrders(su.id, true).then(userOrders => {
+                if (userOrders) setOrders(userOrders);
               });
             }
           } catch {}
@@ -604,10 +614,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         
         // Fetch orders
         if (isAdminEmail(profile.email)) {
-          fetchOrders(); // Admin: fetch all orders
-          fetchPreorders();
+          fetchOrders(undefined, true).then(setOrders); // Admin: fetch all orders
+          fetchPreorders(true).then(setPreorders);
         } else {
-          fetchOrders(profile.id); // Customer: fetch only their orders (EGRESS FIX)
+          fetchOrders(profile.id, true).then(setOrders); // Customer: fetch only their orders (EGRESS FIX)
         }
       }
     }).catch(e => {
@@ -641,10 +651,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
             // Save admin password to localStorage so admin operations don't fail with 403
             const defaultPass = import.meta.env.VITE_ADMIN_PASSWORD || "chennaileather2026";
             localStorage.setItem("yy_admin_pass", defaultPass);
-            fetchOrders(); // Admin: fetch all orders
-            fetchPreorders();
+            fetchOrders(undefined, true).then(setOrders); // Admin: fetch all orders
+            fetchPreorders(true).then(setPreorders);
           } else {
-            fetchOrders(session.user.id); // Customer: fetch only their orders (EGRESS FIX)
+            fetchOrders(session.user.id, true).then(setOrders); // Customer: fetch only their orders (EGRESS FIX)
           }
           
           // Check if there is an existing page path saved in localStorage to avoid forcing "home" / "admin"
@@ -1329,6 +1339,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         // Update local state - DON'T refetch everything
         setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
         removeCache(ORDERS_KEY);
+        if (user?.id) removeCache(`orders_${user.id}`);
+        const target = orders.find(o => o.id === id);
+        if (target?.user_id) removeCache(`orders_${target.user_id}`);
         return true;
       }
       // Fallback: update directly in Supabase

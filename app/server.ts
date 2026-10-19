@@ -1280,7 +1280,11 @@ app.get('/api/orders/user/:userId', async (req, res) => {
     }
   }
   
-  const userOrders = currentOrders.filter((o: any) => o.user_id === userId);
+  const targetEmail = (req.query.customer_email as string || '').toLowerCase();
+  const userOrders = currentOrders.filter((o: any) => 
+    (userId && o.user_id === userId) ||
+    (targetEmail && o.customer_email && o.customer_email.toLowerCase() === targetEmail)
+  );
   res.json(userOrders);
 });
 

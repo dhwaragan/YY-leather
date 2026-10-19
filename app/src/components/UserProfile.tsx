@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 
 export const UserProfile: React.FC = () => {
-  const { user, orders, updateUserProfile, logout, navigateTo } = useApp();
+  const { user, orders, updateUserProfile, logout, navigateTo, refreshOrdersOnly } = useApp();
   
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [orderFilter, setOrderFilter] = useState<'All orders' | 'Active' | 'Cancelled'>('All orders');
@@ -34,6 +34,12 @@ export const UserProfile: React.FC = () => {
   const [profilePhone, setProfilePhone] = useState(user?.phone || '');
   const [profileAddress, setProfileAddress] = useState(user?.address || '');
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'orders' || !orders || orders.length === 0) {
+      refreshOrdersOnly?.(true);
+    }
+  }, [activeTab, refreshOrdersOnly]);
 
   useEffect(() => {
     if (user) {
@@ -214,12 +220,18 @@ export const UserProfile: React.FC = () => {
                      </div>
 
                       {(() => {
-                        const userOrders = orders.filter(o => o.user_id === user?.id);
+                        const userOrders = orders.filter(o => 
+                          (user?.id && o.user_id === user.id) ||
+                          (user?.email && o.customer_email && o.customer_email.toLowerCase() === user.email.toLowerCase())
+                        );
                         let filteredOrders = userOrders;
                         if (orderFilter === 'Active') {
-                          filteredOrders = userOrders.filter(o => ['Ordered', 'Pending', 'Confirmed', 'Dispatched'].includes(o.status));
+                          filteredOrders = userOrders.filter(o => {
+                            const s = (o.status || '').toLowerCase();
+                            return ['ordered', 'pending', 'confirmed', 'dispatched'].includes(s);
+                          });
                         } else if (orderFilter === 'Cancelled') {
-                          filteredOrders = userOrders.filter(o => o.status === 'Cancelled');
+                          filteredOrders = userOrders.filter(o => (o.status || '').toLowerCase() === 'cancelled');
                         }
 
                         if (filteredOrders.length === 0) {
