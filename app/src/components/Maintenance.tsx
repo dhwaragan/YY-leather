@@ -24,7 +24,7 @@ export const Maintenance: React.FC = () => {
           </div>
         </div>
         <div className="content">
-          <div className="mt-logo" style={{width:56,height:56,lineHeight:'56px',marginBottom:12}}>YY</div>
+          <img src="/logo-square.png" alt="Logo" style={{width:56,height:56,borderRadius:14,marginBottom:12,objectFit:'cover',boxShadow:'0 4px 12px rgba(0,0,0,0.15)'}} />
           <h1>WE'LL BE BACK SOON!</h1>
           <p className="mt-lead">We're doing some quick maintenance. Thanks for your patience — we'll be back online shortly.</p>
           <div className="mt-when">Maintenance window: 48 hours (starting now)</div>

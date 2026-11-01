@@ -119,8 +119,14 @@ export const LogoNavbar: React.FC<{ onClick?: () => void }> = ({ onClick }) => {
       className="group flex items-center gap-3 cursor-pointer focus:outline-none text-left select-none"
     >
       {/* Brand Icon */}
-      <div className="h-12 w-12 sm:h-16 sm:w-16 flex items-center justify-center transition-all duration-700 rounded-full overflow-hidden ring-2 ring-gold/20 shadow-xl bg-white/5">
-        <img src="https://res.cloudinary.com/domuelr1f/image/upload/f_auto,q_60,w_200/v1781330047/WhatsApp_Image_2026-06-06_at_8.18.23_PM_1_a7mhk6.jpg" alt="YY Leathers Logo" className="h-full w-full object-cover scale-110 group-hover:scale-125 transition-transform duration-700" loading="eager" decoding="async" />
+      <div className="h-12 w-12 sm:h-14 sm:w-14 flex items-center justify-center transition-all duration-500 rounded-2xl overflow-hidden ring-2 ring-gold/30 shadow-xl bg-black/20">
+        <img 
+          src="/logo-square.png" 
+          alt="Company Logo" 
+          className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" 
+          loading="eager" 
+          decoding="async" 
+        />
       </div>
     </button>
   );

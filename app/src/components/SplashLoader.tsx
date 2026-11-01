@@ -38,10 +38,19 @@ export const SplashLoader: React.FC = () => {
           
           <div className="relative z-10 flex flex-col items-center space-y-6 select-none">
             
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ type: "spring", bounce: 0.4, duration: 0.8 }}
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shadow-2xl ring-2 ring-gold/40 p-1 bg-white/5"
+            >
+              <img src="/logo-square.png" alt="Company Logo" className="w-full h-full object-cover rounded-xl" />
+            </motion.div>
+
             <motion.h1 
               initial={{ opacity: 0, y: 30, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
+              transition={{ type: "spring", bounce: 0.5, duration: 0.8, delay: 0.1 }}
               className="font-serif text-3xl sm:text-4xl text-neutral-50 tracking-wider"
             >
               Welcome to 

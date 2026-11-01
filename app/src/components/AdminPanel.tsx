@@ -1592,9 +1592,12 @@ export const AdminPanel: React.FC = () => {
                 <path d="M15 18l-6-6 6-6" />
               </svg>
             </button>
-            <div className="sb-logo">
-              <div className="sb-brand">YY</div>
-              <div className="sb-sub">Atelier HQ</div>
+            <div className="sb-logo flex items-center gap-2.5">
+              <img src="/logo-square.png" alt="Logo" className="w-8 h-8 rounded-lg object-cover shadow-xs border border-white/10" />
+              <div>
+                <div className="sb-brand">YY</div>
+                <div className="sb-sub">Atelier HQ</div>
+              </div>
             </div>
             <div className="sb-sec">Main</div>
             {[
