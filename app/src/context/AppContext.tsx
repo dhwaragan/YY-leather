@@ -682,7 +682,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
             setCurrentPage(isAdmin ? "admin" : "home");
           }
         }
-      } else {
+      } else if (event === "SIGNED_OUT") {
         setUser(null);
         localStorage.removeItem("yy_user");
         // Clear admin data when logged out
@@ -748,7 +748,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     const promise = (async () => {
       try {
         // For admins: full refresh with orders/preorders
-        const currentUser = user;
+        const savedU = localStorage.getItem("yy_user");
+        let parsedU: any = null;
+        try { parsedU = savedU ? JSON.parse(savedU) : null; } catch {}
+        const currentUser = user || parsedU;
         const isAdmin = currentUser ? isAdminEmail(currentUser.email) : false;
         
         setIsLoading(true);

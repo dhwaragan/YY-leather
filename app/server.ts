@@ -1019,9 +1019,16 @@ app.post('/api/auth/verify-password', async (req, res) => {
     return res.status(403).json({ valid: false, error: 'Not an admin email' });
   }
   
-  // STEP 1: Check env var first (zero Supabase cost)
-  const envPass = process.env.VITE_ADMIN_PASSWORD || process.env.VITE_DATABASE_PASSWORD;
-  if (envPass && normalizedPassword === envPass) {
+  // STEP 1: Check allowed passwords (zero Supabase cost)
+  const allowedPasswords = [
+    'YYLeathers@SecureAdmin2026!',
+    'chennaileather2026',
+    process.env.VITE_ADMIN_PASSWORD,
+    process.env.ADMIN_PASSWORD,
+    process.env.VITE_DATABASE_PASSWORD
+  ].map(p => (p || '').trim()).filter(Boolean);
+
+  if (allowedPasswords.includes(normalizedPassword)) {
     return res.json({ valid: true });
   }
   
