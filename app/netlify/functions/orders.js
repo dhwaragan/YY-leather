@@ -1,13 +1,13 @@
 // Orders Netlify Function - Reads/Writes directly to Supabase for persistence
 import { createClient } from '@supabase/supabase-js';
 
-let SUPABASE_URL = process.env.SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
-if (!SUPABASE_URL.includes('pxavmpkgvonxckmbaksh')) {
-  SUPABASE_URL = "https://pxavmpkgvonxckmbaksh.supabase.co";
+let SUPABASE_URL = process.env.SUPABASE_URL || "https://qkxnktzmqatgdxoawryr.supabase.co";
+if (!SUPABASE_URL.includes('qkxnktzmqatgdxoawryr')) {
+  SUPABASE_URL = "https://qkxnktzmqatgdxoawryr.supabase.co";
 }
-const NEW_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
+const NEW_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFreG5rdHptcWF0Z2R4b2F3cnlyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDcxOTc2MCwiZXhwIjoyMTEwMjk1NzYwfQ.QYavOkZBXOIcpCXPT0CvTypl3i-7wuZ7U7GLpTnmo2s";
 let SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || NEW_SERVICE_KEY;
-if (!SUPABASE_SERVICE_KEY.includes('pxavmpkgvonxckmbaksh')) {
+if (!SUPABASE_SERVICE_KEY.includes('qkxnktzmqatgdxoawryr')) {
   SUPABASE_SERVICE_KEY = NEW_SERVICE_KEY;
 }
 

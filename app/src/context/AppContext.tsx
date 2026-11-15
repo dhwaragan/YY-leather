@@ -532,7 +532,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         hasLoadedRef.current = true;
         
         // Stale-While-Revalidate: Silently sync freshest data in background so cover photo / price changes appear
-        fetchPublicData(true).then((freshData) => {
+        fetchPublicData(false).then((freshData) => {
           if (freshData && freshData.products && freshData.products.length > 0) {
             setProducts(freshData.products.map(mapProduct));
             setOffers(freshData.offers);

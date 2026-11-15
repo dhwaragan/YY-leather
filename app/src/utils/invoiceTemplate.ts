@@ -267,12 +267,9 @@ export const generateInvoiceHTML = (ord: any) => {
       </div>
       <div class="invoice-box">
         <div class="header">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <img src="/logo-square.png" alt="Logo" style="width: 48px; height: 48px; border-radius: 10px; object-fit: cover;" />
-            <div>
-              <div class="brand">YY Leathers</div>
-              <div class="brand-sub">HANDCRAFTED LUXURY FOOTWEAR</div>
-            </div>
+          <div>
+            <div class="brand">YY Leathers</div>
+            <div class="brand-sub">HANDCRAFTED LUXURY FOOTWEAR</div>
           </div>
           <div>
             <div class="invoice-title">INVOICE</div>

@@ -41,18 +41,18 @@ function getAi(): GoogleGenAI {
 }
 
 // Initialize Supabase Client - uses environment variables from .env file
-let SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://pxavmpkgvonxckmbaksh.supabase.co";
-if (!SUPABASE_URL.includes('pxavmpkgvonxckmbaksh')) {
-  SUPABASE_URL = "https://pxavmpkgvonxckmbaksh.supabase.co";
+let SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://qkxnktzmqatgdxoawryr.supabase.co";
+if (!SUPABASE_URL.includes('qkxnktzmqatgdxoawryr')) {
+  SUPABASE_URL = "https://qkxnktzmqatgdxoawryr.supabase.co";
 }
-const NEW_SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MDQ4NTQ4OCwiZXhwIjoyMTA2MDYxNDg4fQ.n0RwNKeeBsbPzPMFAVUwMBMBasL3564cezigfLMMboo";
+const NEW_SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFreG5rdHptcWF0Z2R4b2F3cnlyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5NDcxOTc2MCwiZXhwIjoyMTEwMjk1NzYwfQ.QYavOkZBXOIcpCXPT0CvTypl3i-7wuZ7U7GLpTnmo2s";
 let SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_KEY || NEW_SUPABASE_SERVICE_KEY;
-if (!SUPABASE_SERVICE_KEY.includes('pxavmpkgvonxckmbaksh')) {
+if (!SUPABASE_SERVICE_KEY.includes('qkxnktzmqatgdxoawryr')) {
   SUPABASE_SERVICE_KEY = NEW_SUPABASE_SERVICE_KEY;
 }
-const NEW_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4YXZtcGtndm9ueGNrbWJha3NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA0ODU0ODgsImV4cCI6MjEwNjA2MTQ4OH0.cPg6lBE7MuaLNOYHwFhBZcI8NpsDdnhwcr_nKIBbi8A";
+const NEW_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFreG5rdHptcWF0Z2R4b2F3cnlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ3MTk3NjAsImV4cCI6MjExMDI5NTc2MH0.J-1WnJ7fKZ_BocO9YVr1dzxxzVvEkYluEGMfXKkq9_U";
 let SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || NEW_SUPABASE_ANON_KEY;
-if (!SUPABASE_ANON_KEY.includes('pxavmpkgvonxckmbaksh')) {
+if (!SUPABASE_ANON_KEY.includes('qkxnktzmqatgdxoawryr')) {
   SUPABASE_ANON_KEY = NEW_SUPABASE_ANON_KEY;
 }
 console.log('[Supabase] Connecting to:', SUPABASE_URL);
