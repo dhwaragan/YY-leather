@@ -131,7 +131,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,stanislauscbe@gmail.com,dhwaraganwebsite@gmail.com").split(",").map((e: string) => e.trim()).filter(Boolean);
 
 // EMERGENCY SHUTDOWN LOCK: Hard-locks the storefront in maintenance mode and stops any Supabase egress requests
-export const EMERGENCY_MAINTENANCE_LOCK = true;
+export const EMERGENCY_MAINTENANCE_LOCK = false;
 
 export const isAdminEmail = (email: string) => {
   if (!email) return false;
