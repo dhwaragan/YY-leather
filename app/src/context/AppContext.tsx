@@ -130,6 +130,9 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 // Admin emails list - exported so AdminPanel can use it
 const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAILS || "dhwaragandhwaragan9@gmail.com,Yomeyom786@gmail.com,stanislauscbe@gmail.com,dhwaraganwebsite@gmail.com").split(",").map((e: string) => e.trim()).filter(Boolean);
 
+// EMERGENCY SHUTDOWN LOCK: Hard-locks the storefront in maintenance mode and stops any Supabase egress requests
+export const EMERGENCY_MAINTENANCE_LOCK = true;
+
 export const isAdminEmail = (email: string) => {
   if (!email) return false;
   return ADMIN_EMAILS.some((adminEmail: string) => adminEmail.toLowerCase() === email.trim().toLowerCase());
@@ -167,10 +170,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     return localStorage.getItem("yy_festival_active") !== "false";
   });
 
-  const [isMaintenanceMode, setIsMaintenanceMode] = useState<boolean>(false);
-  const [maintenanceTitle, setMaintenanceTitle] = useState<string>("We'll Be Back Soon");
+  const [isMaintenanceMode, setIsMaintenanceMode] = useState<boolean>(true);
+  const [maintenanceTitle, setMaintenanceTitle] = useState<string>("Store Under Maintenance");
   const [maintenanceMessage, setMaintenanceMessage] = useState<string>(
-    "We're currently updating our store. Please check back soon."
+    "We are currently performing essential system updates. Our storefront is temporarily offline and will return shortly."
   );
   
   // Memoized admin check for this session
@@ -461,6 +464,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Initial fetch of public data with caching
     const init = async () => {
+      // Check if logged-in user is an admin
+      const savedUser = localStorage.getItem("yy_user");
+      let suUser: any = null;
+      try {
+        suUser = savedUser ? JSON.parse(savedUser) : null;
+      } catch {}
+      const isAdminSession = suUser && isAdminEmail(suUser.email);
+
+      // EMERGENCY SHUTDOWN: If maintenance lock is active and user is not admin, halt all public Supabase fetching immediately!
+      if (EMERGENCY_MAINTENANCE_LOCK && !isAdminSession) {
+        setIsLoading(false);
+        hasLoadedRef.current = true;
+        return;
+      }
       // Check cache first to avoid network on first paint
       const cached = getCache<any>(PUBLIC_DATA_KEY, PUBLIC_TTL);
       if (cached) {
@@ -487,7 +504,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
           if (disc) setSitewideDiscount(Number(JSON.parse(disc.value)));
           if (comb) setFestivalCombineWithOffers(JSON.parse(comb.value));
           if (name) setFestivalName(JSON.parse(name.value));
-          setIsMaintenanceMode(isMaint);
+          if (!EMERGENCY_MAINTENANCE_LOCK) setIsMaintenanceMode(isMaint);
           if (maintTitle) setMaintenanceTitle(JSON.parse(maintTitle.value));
           if (maintMsg) setMaintenanceMessage(JSON.parse(maintMsg.value));
         }
@@ -552,7 +569,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         if (disc) setSitewideDiscount(Number(JSON.parse(disc.value)));
         if (comb) setFestivalCombineWithOffers(JSON.parse(comb.value));
         if (name) setFestivalName(JSON.parse(name.value));
-        setIsMaintenanceMode(isMaint);
+        if (!EMERGENCY_MAINTENANCE_LOCK) setIsMaintenanceMode(isMaint);
         if (maintTitle) setMaintenanceTitle(JSON.parse(maintTitle.value));
         if (maintMsg) setMaintenanceMessage(JSON.parse(maintMsg.value));
       }
